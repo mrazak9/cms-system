@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(php -v:*)",
+      "Bash(composer --version:*)",
+      "Bash(composer create-project:*)",
+      "Bash(php artisan:*)",
+      "Bash(cat:*)",
+      "Bash(composer require:*)",
+      "Bash(curl:*)",
+      "Bash(mysql:*)",
+      "Bash(composer dump-autoload:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
