@@ -1,22 +1,10 @@
-@extends('frontend.layouts.app')
+@extends('frontend.layouts.crafto')
 
 @section('title', $page->title . ' - ' . ($settings['site_name'] ?? 'SimpleCMS'))
 @section('meta_description', $page->meta_description ?? '')
 @section('meta_keywords', $page->meta_keywords ?? '')
 
 @section('content')
-    {{-- Breadcrumb --}}
-    <section class="bg-light py-3">
-        <div class="container">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb mb-0">
-                    <li class="breadcrumb-item"><a href="{{ url('/') }}">Home</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">{{ $page->title }}</li>
-                </ol>
-            </nav>
-        </div>
-    </section>
-
     {{-- Page Header (if not using sections or as default) --}}
     @if($page->sections->count() == 0)
         <section class="section">
@@ -43,12 +31,29 @@
         {{-- Render Dynamic Page Sections --}}
         @foreach($page->sections as $section)
             @if($section->is_visible && $section->sectionTemplate)
-                @include('frontend.components.sections.' . $section->sectionTemplate->blade_view, [
-                    'section' => $section,
-                    'content' => array_merge(
-                        json_decode($section->sectionTemplate->default_fields, true) ?? [],
+                @php
+                    // Handle both regular sections and namespaced sections (e.g., crafto.hero-simple)
+                    $viewPath = 'frontend.components.sections.' . str_replace('.', '.', $section->sectionTemplate->blade_view);
+
+                    // Get default fields - handle both JSON string and array
+                    $defaultFields = $section->sectionTemplate->default_fields;
+                    if (is_string($defaultFields)) {
+                        $defaultFields = json_decode($defaultFields, true) ?? [];
+                    } elseif (!is_array($defaultFields)) {
+                        $defaultFields = [];
+                    }
+
+                    // Merge with section content
+                    $mergedContent = array_merge(
+                        $defaultFields,
                         $section->content ?? []
-                    )
+                    );
+                @endphp
+
+                {{-- Render the section component --}}
+                @include($viewPath, [
+                    'section' => $section,
+                    'content' => $mergedContent
                 ])
             @endif
         @endforeach

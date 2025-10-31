@@ -103,6 +103,7 @@ Route::prefix('admin')
 
         // Page Sections Management (nested under pages)
         Route::post('pages/{page}/sections', [PageController::class, 'storeSection'])->name('pages.sections.store');
+        Route::get('pages/{page}/sections/{section}', [PageController::class, 'updateSection'])->name('pages.sections.get');
         Route::put('pages/{page}/sections/{section}', [PageController::class, 'updateSection'])->name('pages.sections.update');
         Route::delete('pages/{page}/sections/{section}', [PageController::class, 'destroySection'])->name('pages.sections.destroy');
         Route::post('pages/{page}/sections/reorder', [PageController::class, 'reorderSections'])->name('pages.sections.reorder');
@@ -129,6 +130,12 @@ Route::prefix('admin')
         Route::get('themes/{id}', [ThemeController::class, 'show'])->name('themes.show');
         Route::post('themes/{id}/activate', [ThemeController::class, 'activate'])->name('themes.activate');
         Route::delete('themes/{id}', [ThemeController::class, 'destroy'])->name('themes.destroy');
+
+        // Theme Settings Management
+        Route::get('themes/{theme}/settings', [\App\Http\Controllers\Admin\ThemeSettingController::class, 'edit'])->name('themes.settings.edit');
+        Route::post('themes/{theme}/settings', [\App\Http\Controllers\Admin\ThemeSettingController::class, 'update'])->name('themes.settings.update');
+        Route::post('themes/{theme}/settings/create', [\App\Http\Controllers\Admin\ThemeSettingController::class, 'store'])->name('themes.settings.store');
+        Route::delete('themes/{theme}/settings/{setting}', [\App\Http\Controllers\Admin\ThemeSettingController::class, 'destroy'])->name('themes.settings.destroy');
 
         // Settings Management
         Route::get('settings', [SettingController::class, 'index'])->name('settings.index');

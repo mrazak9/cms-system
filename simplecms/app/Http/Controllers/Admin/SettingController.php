@@ -21,8 +21,11 @@ class SettingController extends Controller
     public function index()
     {
         try {
-            // Get all settings grouped by their group field
-            $settings = Setting::all()->groupBy('group');
+            // Get all settings and create a flat key-value array for easy access in views
+            $settingsFlat = Setting::all()->pluck('value', 'key')->toArray();
+
+            // Also get settings grouped by their group field for organized display
+            $settingsGrouped = Setting::all()->groupBy('group');
 
             // Define available groups and their labels
             $groups = [
@@ -34,7 +37,11 @@ class SettingController extends Controller
                 'appearance' => 'Appearance',
             ];
 
-            return view('admin.settings.index', compact('settings', 'groups'));
+            return view('admin.settings.index', [
+                'settings' => $settingsFlat,
+                'settingsGrouped' => $settingsGrouped,
+                'groups' => $groups
+            ]);
         } catch (\Exception $e) {
             return back()->with('error', 'Error loading settings: ' . $e->getMessage());
         }
@@ -55,16 +62,50 @@ class SettingController extends Controller
             // Check if settings are in array format or flat format
             $settingsData = $request->has('settings') ? $request->settings : $inputs;
 
-            if (empty($settingsData)) {
+            if (empty($settingsData) && !$request->hasAny(['site_logo', 'site_favicon'])) {
                 return back()->with('error', 'No settings to update.');
             }
 
             $updatedCount = 0;
 
+            // Handle file uploads first
+            $fileFields = ['site_logo', 'site_favicon'];
+            foreach ($fileFields as $fileField) {
+                if ($request->hasFile($fileField)) {
+                    $file = $request->file($fileField);
+
+                    // Validate file
+                    $request->validate([
+                        $fileField => 'image|mimes:jpeg,png,jpg,gif,ico|max:2048'
+                    ]);
+
+                    // Store file in public/storage
+                    $path = $file->store('images', 'public');
+
+                    // Update or create setting
+                    $setting = Setting::where('key', $fileField)->first();
+                    if ($setting) {
+                        // Delete old file if exists
+                        if ($setting->value && \Storage::disk('public')->exists($setting->value)) {
+                            \Storage::disk('public')->delete($setting->value);
+                        }
+                        $setting->update(['value' => $path]);
+                    } else {
+                        Setting::create([
+                            'key' => $fileField,
+                            'value' => $path,
+                            'type' => 'text',
+                            'group' => 'general',
+                        ]);
+                    }
+                    $updatedCount++;
+                }
+            }
+
             // Loop through each setting and update
             foreach ($settingsData as $key => $value) {
                 // Skip file inputs and empty arrays
-                if ($request->hasFile($key) || (is_array($value) && empty($value))) {
+                if (in_array($key, $fileFields) || (is_array($value) && empty($value))) {
                     continue;
                 }
 

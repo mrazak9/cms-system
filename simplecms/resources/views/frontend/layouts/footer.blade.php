@@ -33,18 +33,22 @@
                 @endif
             </div>
 
-            {{-- Quick Links --}}
+            {{-- Quick Links / Footer Menu --}}
             <div class="col-lg-2 col-md-6">
                 <h5 class="mb-3">Quick Links</h5>
                 <ul class="list-unstyled">
-                    <li class="mb-2"><a href="{{ url('/') }}">Home</a></li>
-                    <li class="mb-2"><a href="{{ route('blog.index') }}">Blog</a></li>
-                    @if(isset($footerPages))
-                        @foreach($footerPages as $page)
+                    @if(isset($footerMenu) && $footerMenu && $footerMenu->menuItems->count() > 0)
+                        @foreach($footerMenu->menuItems as $item)
                             <li class="mb-2">
-                                <a href="{{ route('page.show', $page->slug) }}">{{ $page->title }}</a>
+                                <a href="{{ $item->getUrl() }}" @if($item->target) target="{{ $item->target }}" @endif>
+                                    {{ $item->title }}
+                                </a>
                             </li>
                         @endforeach
+                    @else
+                        {{-- Default links if no footer menu --}}
+                        <li class="mb-2"><a href="{{ url('/') }}">Home</a></li>
+                        <li class="mb-2"><a href="{{ route('blog.index') }}">Blog</a></li>
                     @endif
                 </ul>
             </div>
@@ -53,12 +57,22 @@
             <div class="col-lg-3 col-md-6">
                 <h5 class="mb-3">Categories</h5>
                 <ul class="list-unstyled">
-                    @if(isset($footerCategories))
+                    @php
+                        $footerCategories = \App\Models\Category::withCount(['posts' => function ($query) {
+                            $query->published();
+                        }])
+                        ->having('posts_count', '>', 0)
+                        ->take(5)
+                        ->get();
+                    @endphp
+                    @if($footerCategories->count() > 0)
                         @foreach($footerCategories as $category)
                             <li class="mb-2">
                                 <a href="{{ route('blog.category', $category->slug) }}">{{ $category->name }}</a>
                             </li>
                         @endforeach
+                    @else
+                        <li class="mb-2 text-muted">No categories available</li>
                     @endif
                 </ul>
             </div>

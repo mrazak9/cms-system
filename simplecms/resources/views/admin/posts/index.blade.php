@@ -131,7 +131,7 @@
                                         <td>
                                             <div class="btn-group">
                                                 @if($post->is_published)
-                                                    <a href="{{ route('posts.show', $post->slug) }}" target="_blank" class="btn btn-sm btn-info" title="View">
+                                                    <a href="{{ route('blog.show', $post->slug) }}" target="_blank" class="btn btn-sm btn-info" title="View">
                                                         <i class="fas fa-eye"></i>
                                                     </a>
                                                 @endif

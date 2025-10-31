@@ -1,9 +1,10 @@
-@extends('layouts.frontend')
+@extends('frontend.layouts.app')
 
 @section('title', 'Home - ' . config('app.name'))
 
 @section('content')
-<div class="container">
+<section class="section">
+    <div class="container">
     <!-- Hero Section -->
     <div class="jumbotron bg-light">
         <h1 class="display-4">Welcome to {{ config('app.name') }}</h1>
@@ -52,7 +53,7 @@
                                 </div>
                             </div>
                             <div class="card-footer bg-transparent">
-                                <a href="{{ route('post.show', $post->slug) }}" class="btn btn-sm btn-outline-primary btn-block">
+                                <a href="{{ route('blog.show', $post->slug) }}" class="btn btn-sm btn-outline-primary btn-block">
                                     Read More <i class="fas fa-arrow-right ml-1"></i>
                                 </a>
                             </div>
@@ -102,5 +103,6 @@
             </div>
         </div>
     </section>
-</div>
+    </div>
+</section>
 @endsection

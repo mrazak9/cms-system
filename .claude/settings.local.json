@@ -9,7 +9,14 @@
       "Bash(composer require:*)",
       "Bash(curl:*)",
       "Bash(mysql:*)",
-      "Bash(composer dump-autoload:*)"
+      "Bash(composer dump-autoload:*)",
+      "Bash(mkdir:*)",
+      "Bash(php check-templates.php:*)",
+      "Bash(php test-crafto-components.php:*)",
+      "Bash(php verify-page-rendering.php:*)",
+      "Bash(php debug-page-content.php:*)",
+      "Bash(php:*)",
+      "Bash(composer show:*)"
     ],
     "deny": [],
     "ask": []

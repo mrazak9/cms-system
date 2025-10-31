@@ -34,7 +34,14 @@ class PostController extends Controller
             ->having('posts_count', '>', 0)
             ->get();
 
-            return view('frontend.posts.index', compact('posts', 'categories'));
+            // Get active theme to determine which view to use
+            $activeTheme = \App\Models\Theme::where('is_active', true)->first();
+            $viewName = 'frontend.posts.index';
+
+            // If Crafto or Creative theme is active, use default view for now
+            // In the future, we can create theme-specific views
+
+            return view($viewName, compact('posts', 'categories'));
         } catch (\Exception $e) {
             \Log::error('Posts listing error: ' . $e->getMessage());
             abort(500, 'Unable to load posts');

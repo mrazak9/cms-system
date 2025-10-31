@@ -302,22 +302,52 @@ class PageController extends Controller
         ]);
 
         $page = Page::findOrFail($pageId);
-        $section = $page->sections()->create($validated);
+
+        // Map template_id to section_template_id for database
+        $sectionData = [
+            'section_template_id' => $validated['template_id'],
+            'content' => $validated['content'] ?? [],
+            'order' => $validated['order_index'] ?? $page->sections()->count(),
+            'is_visible' => $validated['is_visible'] ?? true,
+        ];
+
+        $section = $page->sections()->create($sectionData);
 
         return response()->json(['success' => true, 'section' => $section]);
     }
 
     /**
-     * Update a section
+     * Get or Update a section
      */
     public function updateSection(Request $request, $pageId, $sectionId)
     {
+        $section = \App\Models\PageSection::with('sectionTemplate')
+            ->where('page_id', $pageId)
+            ->findOrFail($sectionId);
+
+        // If GET request, return section data for editing
+        if ($request->isMethod('get')) {
+            return response()->json([
+                'success' => true,
+                'section' => [
+                    'id' => $section->id,
+                    'content' => $section->content,
+                    'is_visible' => $section->is_visible,
+                    'section_template' => [
+                        'id' => $section->sectionTemplate->id,
+                        'name' => $section->sectionTemplate->name,
+                        'slug' => $section->sectionTemplate->slug,
+                    ]
+                ]
+            ]);
+        }
+
+        // If PUT request, update the section
         $validated = $request->validate([
             'content' => 'nullable|array',
             'is_visible' => 'boolean',
         ]);
 
-        $section = \App\Models\PageSection::where('page_id', $pageId)->findOrFail($sectionId);
         $section->update($validated);
 
         return response()->json(['success' => true]);
@@ -344,7 +374,7 @@ class PageController extends Controller
         foreach ($order as $index => $sectionId) {
             \App\Models\PageSection::where('id', $sectionId)
                 ->where('page_id', $pageId)
-                ->update(['order_index' => $index]);
+                ->update(['order' => $index]);
         }
 
         return response()->json(['success' => true]);

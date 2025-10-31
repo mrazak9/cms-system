@@ -88,7 +88,7 @@
                                             <input type="text"
                                                    class="form-control @error('site_name') is-invalid @enderror"
                                                    id="site_name"
-                                                   name="settings[site_name]"
+                                                   name="site_name"
                                                    value="{{ old('site_name', $settings['site_name'] ?? '') }}"
                                                    required>
                                             @error('site_name')
@@ -101,7 +101,7 @@
                                             <input type="text"
                                                    class="form-control @error('site_tagline') is-invalid @enderror"
                                                    id="site_tagline"
-                                                   name="settings[site_tagline]"
+                                                   name="site_tagline"
                                                    value="{{ old('site_tagline', $settings['site_tagline'] ?? '') }}"
                                                    placeholder="Just another SimpleCMS site">
                                             @error('site_tagline')
@@ -113,7 +113,7 @@
                                             <label for="site_description">Site Description</label>
                                             <textarea class="form-control @error('site_description') is-invalid @enderror"
                                                       id="site_description"
-                                                      name="settings[site_description]"
+                                                      name="site_description"
                                                       rows="4">{{ old('site_description', $settings['site_description'] ?? '') }}</textarea>
                                             @error('site_description')
                                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -121,14 +121,14 @@
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="admin_email">Admin Email <span class="text-danger">*</span></label>
+                                            <label for="mail_from_address">Admin Email <span class="text-danger">*</span></label>
                                             <input type="email"
-                                                   class="form-control @error('admin_email') is-invalid @enderror"
-                                                   id="admin_email"
-                                                   name="admin_email"
-                                                   value="{{ old('admin_email', $settings['admin_email'] ?? '') }}"
+                                                   class="form-control @error('mail_from_address') is-invalid @enderror"
+                                                   id="mail_from_address"
+                                                   name="mail_from_address"
+                                                   value="{{ old('mail_from_address', $settings['mail_from_address'] ?? '') }}"
                                                    required>
-                                            @error('admin_email')
+                                            @error('mail_from_address')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
                                         </div>
@@ -149,15 +149,15 @@
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="posts_per_page">Posts Per Page</label>
+                                            <label for="items_per_page">Items Per Page</label>
                                             <input type="number"
-                                                   class="form-control @error('posts_per_page') is-invalid @enderror"
-                                                   id="posts_per_page"
-                                                   name="posts_per_page"
-                                                   value="{{ old('posts_per_page', $settings['posts_per_page'] ?? 10) }}"
+                                                   class="form-control @error('items_per_page') is-invalid @enderror"
+                                                   id="items_per_page"
+                                                   name="items_per_page"
+                                                   value="{{ old('items_per_page', $settings['items_per_page'] ?? 10) }}"
                                                    min="1"
                                                    max="100">
-                                            @error('posts_per_page')
+                                            @error('items_per_page')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
                                         </div>
@@ -168,7 +168,12 @@
                                             <label>Site Logo</label>
                                             @if(!empty($settings['site_logo']))
                                                 <div class="mb-2">
-                                                    <img src="{{ asset('storage/' . $settings['site_logo']) }}"
+                                                    @php
+                                                        $logoUrl = str_starts_with($settings['site_logo'], '/')
+                                                            ? asset($settings['site_logo'])
+                                                            : asset('storage/' . $settings['site_logo']);
+                                                    @endphp
+                                                    <img src="{{ $logoUrl }}"
                                                          alt="Site Logo"
                                                          class="img-thumbnail"
                                                          style="max-width: 100%;">
@@ -191,7 +196,12 @@
                                             <label>Site Favicon</label>
                                             @if(!empty($settings['site_favicon']))
                                                 <div class="mb-2">
-                                                    <img src="{{ asset('storage/' . $settings['site_favicon']) }}"
+                                                    @php
+                                                        $faviconUrl = str_starts_with($settings['site_favicon'], '/')
+                                                            ? asset($settings['site_favicon'])
+                                                            : asset('storage/' . $settings['site_favicon']);
+                                                    @endphp
+                                                    <img src="{{ $faviconUrl }}"
                                                          alt="Site Favicon"
                                                          class="img-thumbnail"
                                                          style="max-width: 64px;">
@@ -291,76 +301,91 @@
                                 <div class="row mt-4">
                                     <div class="col-md-8">
                                         <div class="form-group">
-                                            <label for="facebook_url">
+                                            <label for="facebook">
                                                 <i class="fab fa-facebook"></i> Facebook URL
                                             </label>
                                             <input type="url"
-                                                   class="form-control @error('facebook_url') is-invalid @enderror"
-                                                   id="facebook_url"
-                                                   name="facebook_url"
-                                                   value="{{ old('facebook_url', $settings['facebook_url'] ?? '') }}"
+                                                   class="form-control @error('facebook') is-invalid @enderror"
+                                                   id="facebook"
+                                                   name="facebook"
+                                                   value="{{ old('facebook', $settings['facebook'] ?? '') }}"
                                                    placeholder="https://facebook.com/yourpage">
-                                            @error('facebook_url')
+                                            @error('facebook')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="twitter_url">
+                                            <label for="twitter">
                                                 <i class="fab fa-twitter"></i> Twitter URL
                                             </label>
                                             <input type="url"
-                                                   class="form-control @error('twitter_url') is-invalid @enderror"
-                                                   id="twitter_url"
-                                                   name="twitter_url"
-                                                   value="{{ old('twitter_url', $settings['twitter_url'] ?? '') }}"
+                                                   class="form-control @error('twitter') is-invalid @enderror"
+                                                   id="twitter"
+                                                   name="twitter"
+                                                   value="{{ old('twitter', $settings['twitter'] ?? '') }}"
                                                    placeholder="https://twitter.com/youraccount">
-                                            @error('twitter_url')
+                                            @error('twitter')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="instagram_url">
+                                            <label for="instagram">
                                                 <i class="fab fa-instagram"></i> Instagram URL
                                             </label>
                                             <input type="url"
-                                                   class="form-control @error('instagram_url') is-invalid @enderror"
-                                                   id="instagram_url"
-                                                   name="instagram_url"
-                                                   value="{{ old('instagram_url', $settings['instagram_url'] ?? '') }}"
+                                                   class="form-control @error('instagram') is-invalid @enderror"
+                                                   id="instagram"
+                                                   name="instagram"
+                                                   value="{{ old('instagram', $settings['instagram'] ?? '') }}"
                                                    placeholder="https://instagram.com/youraccount">
-                                            @error('instagram_url')
+                                            @error('instagram')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="linkedin_url">
+                                            <label for="linkedin">
                                                 <i class="fab fa-linkedin"></i> LinkedIn URL
                                             </label>
                                             <input type="url"
-                                                   class="form-control @error('linkedin_url') is-invalid @enderror"
-                                                   id="linkedin_url"
-                                                   name="linkedin_url"
-                                                   value="{{ old('linkedin_url', $settings['linkedin_url'] ?? '') }}"
+                                                   class="form-control @error('linkedin') is-invalid @enderror"
+                                                   id="linkedin"
+                                                   name="linkedin"
+                                                   value="{{ old('linkedin', $settings['linkedin'] ?? '') }}"
                                                    placeholder="https://linkedin.com/company/yourcompany">
-                                            @error('linkedin_url')
+                                            @error('linkedin')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="youtube_url">
+                                            <label for="youtube">
                                                 <i class="fab fa-youtube"></i> YouTube URL
                                             </label>
                                             <input type="url"
-                                                   class="form-control @error('youtube_url') is-invalid @enderror"
-                                                   id="youtube_url"
-                                                   name="youtube_url"
-                                                   value="{{ old('youtube_url', $settings['youtube_url'] ?? '') }}"
+                                                   class="form-control @error('youtube') is-invalid @enderror"
+                                                   id="youtube"
+                                                   name="youtube"
+                                                   value="{{ old('youtube', $settings['youtube'] ?? '') }}"
                                                    placeholder="https://youtube.com/c/yourchannel">
-                                            @error('youtube_url')
+                                            @error('youtube')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="whatsapp">
+                                                <i class="fab fa-whatsapp"></i> WhatsApp Number
+                                            </label>
+                                            <input type="text"
+                                                   class="form-control @error('whatsapp') is-invalid @enderror"
+                                                   id="whatsapp"
+                                                   name="whatsapp"
+                                                   value="{{ old('whatsapp', $settings['whatsapp'] ?? '') }}"
+                                                   placeholder="+6281234567890">
+                                            @error('whatsapp')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
                                         </div>
@@ -417,14 +442,14 @@
                                 <div class="row mt-4">
                                     <div class="col-md-8">
                                         <div class="form-group">
-                                            <label for="google_analytics_id">Google Analytics Tracking ID</label>
+                                            <label for="google_analytics">Google Analytics Tracking ID</label>
                                             <input type="text"
-                                                   class="form-control @error('google_analytics_id') is-invalid @enderror"
-                                                   id="google_analytics_id"
-                                                   name="google_analytics_id"
-                                                   value="{{ old('google_analytics_id', $settings['google_analytics_id'] ?? '') }}"
+                                                   class="form-control @error('google_analytics') is-invalid @enderror"
+                                                   id="google_analytics"
+                                                   name="google_analytics"
+                                                   value="{{ old('google_analytics', $settings['google_analytics'] ?? '') }}"
                                                    placeholder="G-XXXXXXXXXX or UA-XXXXXXXXX-X">
-                                            @error('google_analytics_id')
+                                            @error('google_analytics')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
                                         </div>

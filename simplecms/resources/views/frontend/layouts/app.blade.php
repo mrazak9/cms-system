@@ -25,7 +25,15 @@
     <meta name="twitter:image" content="@yield('twitter_image', asset('images/default-og-image.jpg'))">
 
     {{-- Favicon --}}
-    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    @php
+        $faviconPath = $settings['site_favicon'] ?? '';
+        if ($faviconPath) {
+            $faviconUrl = str_starts_with($faviconPath, '/') ? asset($faviconPath) : asset('storage/' . $faviconPath);
+        } else {
+            $faviconUrl = asset('favicon.ico');
+        }
+    @endphp
+    <link rel="icon" type="image/x-icon" href="{{ $faviconUrl }}">
 
     {{-- Bootstrap 5 CSS --}}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">

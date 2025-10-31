@@ -30,18 +30,28 @@ class PageController extends Controller
                 }, 'theme'])
                 ->firstOrFail();
 
-            // Get the active theme
+            // Get the theme for this page (specific theme or active theme)
             $theme = $page->theme;
 
-            // Determine which view to use based on theme
-            $viewName = $theme ? "themes.{$theme->slug}.page" : 'frontend.page';
-
-            // Check if the theme view exists, fallback to default
-            if ($theme && !view()->exists($viewName)) {
-                $viewName = 'frontend.page';
+            // If no specific theme assigned, use the active theme
+            if (!$theme) {
+                $theme = \App\Models\Theme::where('is_active', true)->first();
             }
 
-            return view($viewName, compact('page'));
+            // Determine which view to use based on theme
+            // For now, we'll use the default view since theme-specific views aren't created yet
+            // Future: create views at resources/views/themes/{theme_slug}/page.blade.php
+            $viewName = 'frontend.page';
+
+            // Check for theme-specific view (if exists)
+            if ($theme) {
+                $themeViewName = "themes.{$theme->slug}.page";
+                if (view()->exists($themeViewName)) {
+                    $viewName = $themeViewName;
+                }
+            }
+
+            return view($viewName, compact('page', 'theme'));
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             abort(404, 'Page not found');
         } catch (\Exception $e) {

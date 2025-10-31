@@ -1,12 +1,31 @@
 <div class="main-sidebar sidebar-style-2">
     <aside id="sidebar-wrapper">
+        @php
+            $siteName = \App\Models\Setting::get('site_name', 'SimpleCMS');
+            $siteLogo = \App\Models\Setting::get('site_logo');
+            if ($siteLogo) {
+                $logoUrl = str_starts_with($siteLogo, '/') ? asset($siteLogo) : asset('storage/' . $siteLogo);
+            } else {
+                $logoUrl = null;
+            }
+        @endphp
         <div class="sidebar-brand">
             <a href="{{ route('admin.dashboard') }}">
-                <i class="fas fa-layer-group"></i> SimpleCMS
+                @if($logoUrl)
+                    <img src="{{ $logoUrl }}" alt="{{ $siteName }}" style="max-height: 32px; max-width: 150px; object-fit: contain;">
+                @else
+                    <i class="fas fa-layer-group"></i> {{ $siteName }}
+                @endif
             </a>
         </div>
         <div class="sidebar-brand sidebar-brand-sm">
-            <a href="{{ route('admin.dashboard') }}">SC</a>
+            <a href="{{ route('admin.dashboard') }}">
+                @if($logoUrl)
+                    <img src="{{ $logoUrl }}" alt="{{ $siteName }}" style="max-height: 28px; max-width: 40px; object-fit: contain;">
+                @else
+                    {{ strtoupper(substr($siteName, 0, 2)) }}
+                @endif
+            </a>
         </div>
         <ul class="sidebar-menu">
             <li class="menu-header">Dashboard</li>

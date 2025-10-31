@@ -75,8 +75,10 @@ class MenuItem extends Model
         if ($this->type === 'page' && $this->page) {
             return route('page.show', $this->page->slug);
         } elseif ($this->type === 'post' && $this->post) {
-            return route('post.show', $this->post->slug);
+            return route('blog.show', $this->post->slug);
+        } elseif ($this->type === 'category' && $this->category) {
+            return route('blog.category', $this->category->slug);
         }
-        return $this->url;
+        return $this->url ?: '#';
     }
 }

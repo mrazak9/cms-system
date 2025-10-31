@@ -57,7 +57,7 @@
                             @if($post->is_published)
                                 <small class="form-text text-muted">
                                     <i class="fas fa-exclamation-triangle text-warning"></i>
-                                    Current URL: <a href="{{ route('posts.show', $post->slug) }}" target="_blank">{{ route('posts.show', $post->slug) }}</a>
+                                    Current URL: <a href="{{ route('blog.show', $post->slug) }}" target="_blank">{{ route('blog.show', $post->slug) }}</a>
                                 </small>
                             @endif
                         </div>
@@ -176,7 +176,7 @@
                                 <i class="fas fa-save"></i> Update Post
                             </button>
                             @if($post->is_published)
-                                <a href="{{ route('posts.show', $post->slug) }}" target="_blank" class="btn btn-info btn-lg btn-block">
+                                <a href="{{ route('blog.show', $post->slug) }}" target="_blank" class="btn btn-info btn-lg btn-block">
                                     <i class="fas fa-eye"></i> View Post
                                 </a>
                             @endif

@@ -4,7 +4,11 @@
             {{-- Logo/Brand --}}
             <a class="navbar-brand" href="{{ url('/') }}">
                 @if(isset($settings['site_logo']) && $settings['site_logo'])
-                    <img src="{{ asset($settings['site_logo']) }}" alt="{{ $settings['site_name'] ?? 'SimpleCMS' }}" height="40">
+                    @php
+                        $logoPath = $settings['site_logo'];
+                        $logoUrl = str_starts_with($logoPath, '/') ? asset($logoPath) : asset('storage/' . $logoPath);
+                    @endphp
+                    <img src="{{ $logoUrl }}" alt="{{ $settings['site_name'] ?? 'SimpleCMS' }}" height="40" style="object-fit: contain;">
                 @else
                     {{ $settings['site_name'] ?? 'SimpleCMS' }}
                 @endif

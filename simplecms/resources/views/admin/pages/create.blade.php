@@ -98,20 +98,36 @@
                     </div>
                     <div class="card-body">
                         <div class="form-group">
-                            <label for="theme_id">Theme</label>
+                            <label for="theme_id">
+                                <i class="fas fa-paint-brush"></i> Theme
+                            </label>
                             <select class="form-control @error('theme_id') is-invalid @enderror"
                                     id="theme_id"
                                     name="theme_id">
-                                <option value="">Default Theme</option>
+                                @php
+                                    $activeTheme = \App\Models\Theme::where('is_active', true)->first();
+                                @endphp
+                                <option value="">
+                                    Use Active Theme
+                                    @if($activeTheme)
+                                        ({{ $activeTheme->name }})
+                                    @endif
+                                </option>
                                 @foreach($themes ?? [] as $theme)
                                     <option value="{{ $theme->id }}" {{ old('theme_id') == $theme->id ? 'selected' : '' }}>
                                         {{ $theme->name }}
+                                        @if($theme->is_active)
+                                            ★ Active
+                                        @endif
                                     </option>
                                 @endforeach
                             </select>
                             @error('theme_id')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
+                            <small class="form-text text-muted">
+                                <i class="fas fa-info-circle"></i> Select a specific theme for this page, or use the active theme.
+                            </small>
                         </div>
 
                         <div class="form-group">
