@@ -76,6 +76,22 @@
             </li>
 
             <li class="menu-header">System</li>
+            @can('users.view')
+            <li class="{{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('admin.users.index') }}">
+                    <i class="fas fa-users"></i> <span>Users</span>
+                </a>
+            </li>
+            @endcan
+
+            @can('roles.view')
+            <li class="{{ request()->routeIs('admin.roles.*') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('admin.roles.index') }}">
+                    <i class="fas fa-user-shield"></i> <span>Roles & Permissions</span>
+                </a>
+            </li>
+            @endcan
+
             <li class="{{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('admin.settings.index') }}">
                     <i class="fas fa-cog"></i> <span>Settings</span>

@@ -12,6 +12,8 @@ use App\Http\Controllers\Admin\MenuController;
 use App\Http\Controllers\Admin\ThemeController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\MediaController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\RoleController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -151,6 +153,12 @@ Route::prefix('admin')
         Route::get('media/{id}/edit', [MediaController::class, 'edit'])->name('media.edit');
         Route::put('media/{id}', [MediaController::class, 'update'])->name('media.update');
         Route::delete('media/{id}', [MediaController::class, 'destroy'])->name('media.destroy');
+
+        // User Management (Resource Controller)
+        Route::resource('users', UserController::class);
+
+        // Role Management (Resource Controller)
+        Route::resource('roles', RoleController::class);
     });
 
 /*
