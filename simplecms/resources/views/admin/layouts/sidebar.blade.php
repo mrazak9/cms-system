@@ -36,44 +36,58 @@
             </li>
 
             <li class="menu-header">Content</li>
+            @can('pages.view')
             <li class="{{ request()->routeIs('admin.pages.*') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('admin.pages.index') }}">
                     <i class="far fa-file-alt"></i> <span>Pages</span>
                 </a>
             </li>
+            @endcan
 
+            @if(auth()->user()->can('posts.view') || auth()->user()->can('categories.view'))
             <li class="dropdown {{ request()->routeIs('admin.posts.*') || request()->routeIs('admin.categories.*') ? 'active' : '' }}">
                 <a href="#" class="nav-link has-dropdown" data-toggle="dropdown">
                     <i class="fas fa-newspaper"></i> <span>Posts & Categories</span>
                 </a>
                 <ul class="dropdown-menu">
+                    @can('posts.view')
                     <li class="{{ request()->routeIs('admin.posts.*') ? 'active' : '' }}">
                         <a class="nav-link" href="{{ route('admin.posts.index') }}">All Posts</a>
                     </li>
+                    @endcan
+                    @can('categories.view')
                     <li class="{{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
                         <a class="nav-link" href="{{ route('admin.categories.index') }}">Categories</a>
                     </li>
+                    @endcan
                 </ul>
             </li>
+            @endif
 
+            @can('menus.view')
             <li class="{{ request()->routeIs('admin.menus.*') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('admin.menus.index') }}">
                     <i class="fas fa-bars"></i> <span>Menus</span>
                 </a>
             </li>
+            @endcan
 
             <li class="menu-header">Appearance</li>
+            @can('themes.view')
             <li class="{{ request()->routeIs('admin.themes.*') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('admin.themes.index') }}">
                     <i class="fas fa-paint-brush"></i> <span>Themes</span>
                 </a>
             </li>
+            @endcan
 
+            @can('media.view')
             <li class="{{ request()->routeIs('admin.media.*') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('admin.media.index') }}">
                     <i class="far fa-images"></i> <span>Media Library</span>
                 </a>
             </li>
+            @endcan
 
             <li class="menu-header">System</li>
             @can('users.view')
@@ -92,11 +106,13 @@
             </li>
             @endcan
 
+            @can('settings.view')
             <li class="{{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('admin.settings.index') }}">
                     <i class="fas fa-cog"></i> <span>Settings</span>
                 </a>
             </li>
+            @endcan
         </ul>
 
         <div class="mt-4 mb-4 p-3 hide-sidebar-mini">

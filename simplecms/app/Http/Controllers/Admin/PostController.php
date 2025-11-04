@@ -17,6 +17,24 @@ use Illuminate\Support\Facades\Storage;
 class PostController extends Controller
 {
     /**
+     * Constructor - Apply permission middleware
+     */
+    public function __construct()
+    {
+        // View permissions
+        $this->middleware('permission:posts.view')->only(['index', 'show']);
+
+        // Create permissions
+        $this->middleware('permission:posts.create')->only(['create', 'store']);
+
+        // Edit permissions (will check ownership in Phase 2)
+        $this->middleware('permission:posts.edit')->only(['edit', 'update']);
+
+        // Delete permissions (will check ownership in Phase 2)
+        $this->middleware('permission:posts.delete')->only(['destroy']);
+    }
+
+    /**
      * Display a listing of posts with pagination
      *
      * @return \Illuminate\View\View

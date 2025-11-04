@@ -10,6 +10,24 @@ use Spatie\Permission\Models\Permission;
 class RoleController extends Controller
 {
     /**
+     * Apply permission middleware to controller actions.
+     */
+    public function __construct()
+    {
+        // View permissions
+        $this->middleware('permission:roles.view')->only(['index', 'show']);
+
+        // Create permissions
+        $this->middleware('permission:roles.create')->only(['create', 'store']);
+
+        // Edit permissions
+        $this->middleware('permission:roles.edit')->only(['edit', 'update']);
+
+        // Delete permissions
+        $this->middleware('permission:roles.delete')->only(['destroy']);
+    }
+
+    /**
      * Display a listing of the roles.
      */
     public function index()

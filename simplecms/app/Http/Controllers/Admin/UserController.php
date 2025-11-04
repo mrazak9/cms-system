@@ -11,6 +11,24 @@ use Spatie\Permission\Models\Role;
 class UserController extends Controller
 {
     /**
+     * Apply permission middleware to controller actions.
+     */
+    public function __construct()
+    {
+        // View permissions
+        $this->middleware('permission:users.view')->only(['index', 'show']);
+
+        // Create permissions
+        $this->middleware('permission:users.create')->only(['create', 'store']);
+
+        // Edit permissions
+        $this->middleware('permission:users.edit')->only(['edit', 'update']);
+
+        // Delete permissions
+        $this->middleware('permission:users.delete')->only(['destroy']);
+    }
+
+    /**
      * Display a listing of the users.
      */
     public function index()
@@ -118,12 +136,12 @@ class UserController extends Controller
                 ->with('error', 'Cannot delete your own account!');
         }
 
-        // Prevent deleting last admin
+        // Prevent deleting last admin - must have at least 2 admins before allowing deletion
         if ($user->hasRole('admin')) {
             $adminCount = User::role('admin')->count();
-            if ($adminCount <= 1) {
+            if ($adminCount <= 2) {
                 return redirect()->back()
-                    ->with('error', 'Cannot delete the last admin user!');
+                    ->with('error', 'System requires at least 2 admin accounts for safety. Cannot delete this admin user!');
             }
         }
 

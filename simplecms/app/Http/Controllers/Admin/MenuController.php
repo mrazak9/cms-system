@@ -18,6 +18,24 @@ use Illuminate\Support\Facades\DB;
 class MenuController extends Controller
 {
     /**
+     * Constructor - Apply permission middleware
+     */
+    public function __construct()
+    {
+        // View permissions
+        $this->middleware('permission:menus.view')->only(['index', 'show']);
+
+        // Create permissions
+        $this->middleware('permission:menus.create')->only(['create', 'store', 'storeItem']);
+
+        // Edit permissions
+        $this->middleware('permission:menus.edit')->only(['edit', 'update', 'updateItem', 'reorderItems']);
+
+        // Delete permissions
+        $this->middleware('permission:menus.delete')->only(['destroy', 'destroyItem']);
+    }
+
+    /**
      * Display a listing of menus
      *
      * @return \Illuminate\View\View

@@ -15,6 +15,24 @@ use Illuminate\Support\Str;
 class CategoryController extends Controller
 {
     /**
+     * Constructor - Apply permission middleware
+     */
+    public function __construct()
+    {
+        // View permissions
+        $this->middleware('permission:categories.view')->only(['index', 'show']);
+
+        // Create permissions
+        $this->middleware('permission:categories.create')->only(['create', 'store']);
+
+        // Edit permissions
+        $this->middleware('permission:categories.edit')->only(['edit', 'update']);
+
+        // Delete permissions
+        $this->middleware('permission:categories.delete')->only(['destroy']);
+    }
+
+    /**
      * Display a listing of categories with post count
      *
      * @return \Illuminate\View\View
@@ -112,9 +130,10 @@ class CategoryController extends Controller
     public function edit($id)
     {
         try {
-            $category = Category::findOrFail($id);
+            $editCategory = Category::findOrFail($id);
+            $categories = Category::withCount('posts')->latest()->paginate(15);
 
-            return view('admin.categories.edit', compact('category'));
+            return view('admin.categories.index', compact('editCategory', 'categories'));
         } catch (\Exception $e) {
             return back()->with('error', 'Error loading category for editing: ' . $e->getMessage());
         }

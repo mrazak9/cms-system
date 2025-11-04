@@ -9,8 +9,9 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * Admin Middleware
  *
- * This middleware checks if the authenticated user has the 'admin' role
- * using Spatie Permission package. If not, redirects to home page with error.
+ * This middleware checks if the authenticated user has any admin-related role
+ * (admin, editor, author) using Spatie Permission package.
+ * Specific permission checks are handled by controller middleware.
  */
 class Admin
 {
@@ -26,9 +27,11 @@ class Admin
             return redirect('/login')->with('error', 'Please login to access admin panel.');
         }
 
-        // Check if user has admin role using Spatie Permission
-        if (!auth()->user()->hasRole('admin')) {
-            abort(403, 'Unauthorized access. Admin privileges required.');
+        // Check if user has any admin-related role
+        // (admin, editor, or author can access admin panel)
+        // Specific permissions are checked by controller middleware
+        if (!auth()->user()->hasAnyRole(['admin', 'editor', 'author'])) {
+            abort(403, 'Unauthorized access. You need admin, editor, or author role to access this area.');
         }
 
         return $next($request);

@@ -15,6 +15,24 @@ use Illuminate\Support\Facades\Storage;
 class MediaController extends Controller
 {
     /**
+     * Constructor - Apply permission middleware
+     */
+    public function __construct()
+    {
+        // View permissions
+        $this->middleware('permission:media.view')->only(['index', 'show']);
+
+        // Upload permissions
+        $this->middleware('permission:media.upload')->only(['create', 'store', 'upload']);
+
+        // Edit permissions (will check ownership in Phase 2)
+        $this->middleware('permission:media.edit')->only(['edit', 'update']);
+
+        // Delete permissions (will check ownership in Phase 2)
+        $this->middleware('permission:media.delete')->only(['destroy']);
+    }
+
+    /**
      * Display a listing of media files with pagination
      *
      * @param  \Illuminate\Http\Request  $request

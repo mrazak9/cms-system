@@ -14,6 +14,18 @@ use Illuminate\Http\Request;
 class SettingController extends Controller
 {
     /**
+     * Constructor - Apply permission middleware
+     */
+    public function __construct()
+    {
+        // View permissions
+        $this->middleware('permission:settings.view')->only(['index', 'showGroup']);
+
+        // Edit permissions
+        $this->middleware('permission:settings.edit')->only(['update']);
+    }
+
+    /**
      * Display settings form grouped by group
      *
      * @return \Illuminate\View\View

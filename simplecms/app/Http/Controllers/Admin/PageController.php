@@ -19,6 +19,24 @@ use Illuminate\Support\Facades\DB;
 class PageController extends Controller
 {
     /**
+     * Constructor - Apply permission middleware
+     */
+    public function __construct()
+    {
+        // View permissions
+        $this->middleware('permission:pages.view')->only(['index', 'show']);
+
+        // Create permissions
+        $this->middleware('permission:pages.create')->only(['create', 'store']);
+
+        // Edit permissions
+        $this->middleware('permission:pages.edit')->only(['edit', 'update']);
+
+        // Delete permissions
+        $this->middleware('permission:pages.delete')->only(['destroy']);
+    }
+
+    /**
      * Display a listing of pages with pagination
      *
      * @return \Illuminate\View\View

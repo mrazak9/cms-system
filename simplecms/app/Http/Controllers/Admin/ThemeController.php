@@ -14,6 +14,24 @@ use Illuminate\Http\Request;
 class ThemeController extends Controller
 {
     /**
+     * Constructor - Apply permission middleware
+     */
+    public function __construct()
+    {
+        // View permissions
+        $this->middleware('permission:themes.view')->only(['index', 'show']);
+
+        // Activate permissions
+        $this->middleware('permission:themes.activate')->only(['activate']);
+
+        // Upload permissions
+        $this->middleware('permission:themes.upload')->only(['store']);
+
+        // Delete permissions
+        $this->middleware('permission:themes.delete')->only(['destroy']);
+    }
+
+    /**
      * Display a listing of themes
      *
      * @return \Illuminate\View\View
