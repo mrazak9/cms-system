@@ -10,19 +10,34 @@
     <meta name="description" content="@yield('meta_description', $settings['site_description'] ?? '')">
     <meta name="keywords" content="@yield('meta_keywords', '')">
     <meta name="author" content="{{ $settings['site_name'] ?? 'SimpleCMS' }}">
+    <meta name="robots" content="@yield('robots', 'index, follow')">
+
+    {{-- Canonical URL --}}
+    <link rel="canonical" href="@yield('canonical', url()->current())">
 
     {{-- Open Graph Meta Tags --}}
-    <meta property="og:title" content="@yield('og_title', $settings['site_name'] ?? 'SimpleCMS')">
-    <meta property="og:description" content="@yield('og_description', $settings['site_description'] ?? '')">
+    <meta property="og:title" content="@yield('og_title', @yield('title', $settings['site_name'] ?? 'SimpleCMS'))">
+    <meta property="og:description" content="@yield('og_description', @yield('meta_description', $settings['site_description'] ?? ''))">
     <meta property="og:image" content="@yield('og_image', asset('images/default-og-image.jpg'))">
-    <meta property="og:url" content="{{ url()->current() }}">
-    <meta property="og:type" content="website">
+    <meta property="og:url" content="@yield('canonical', url()->current())">
+    <meta property="og:type" content="@yield('og_type', 'website')">
+    <meta property="og:site_name" content="{{ $settings['site_name'] ?? 'SimpleCMS' }}">
+    <meta property="og:locale" content="en_US">
 
     {{-- Twitter Card Meta Tags --}}
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="@yield('twitter_title', $settings['site_name'] ?? 'SimpleCMS')">
-    <meta name="twitter:description" content="@yield('twitter_description', $settings['site_description'] ?? '')">
+    <meta name="twitter:site" content="@yield('twitter_site', $settings['twitter_handle'] ?? '')">
+    <meta name="twitter:title" content="@yield('twitter_title', @yield('title', $settings['site_name'] ?? 'SimpleCMS'))">
+    <meta name="twitter:description" content="@yield('twitter_description', @yield('meta_description', $settings['site_description'] ?? ''))">
     <meta name="twitter:image" content="@yield('twitter_image', asset('images/default-og-image.jpg'))">
+
+    {{-- Additional SEO Tags --}}
+    @if(isset($settings['google_site_verification']) && $settings['google_site_verification'])
+        <meta name="google-site-verification" content="{{ $settings['google_site_verification'] }}">
+    @endif
+
+    {{-- Schema.org Markup --}}
+    @stack('schema_markup')
 
     {{-- Favicon --}}
     @php

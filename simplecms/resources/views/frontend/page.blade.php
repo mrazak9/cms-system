@@ -3,6 +3,25 @@
 @section('title', $page->title . ' - ' . ($settings['site_name'] ?? 'SimpleCMS'))
 @section('meta_description', $page->meta_description ?? '')
 @section('meta_keywords', $page->meta_keywords ?? '')
+@section('canonical', url($page->slug))
+
+@push('schema_markup')
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": {{ json_encode($page->title) }},
+    "description": {{ json_encode($page->meta_description ?? '') }},
+    "url": {{ json_encode(url($page->slug)) }},
+    "datePublished": {{ json_encode($page->created_at->toIso8601String()) }},
+    "dateModified": {{ json_encode($page->updated_at->toIso8601String()) }},
+    "publisher": {
+        "@type": "Organization",
+        "name": {{ json_encode($settings['site_name'] ?? 'SimpleCMS') }}
+    }
+}
+</script>
+@endpush
 
 @section('content')
     {{-- Page Header (if not using sections or as default) --}}

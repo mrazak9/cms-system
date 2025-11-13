@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\SitemapController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -160,6 +161,18 @@ Route::prefix('admin')
         // Role Management (Resource Controller)
         Route::resource('roles', RoleController::class);
     });
+
+/*
+|--------------------------------------------------------------------------
+| SEO Routes
+|--------------------------------------------------------------------------
+*/
+
+// XML Sitemap
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
+
+// Robots.txt
+Route::get('/robots.txt', [SitemapController::class, 'robots'])->name('robots');
 
 /*
 |--------------------------------------------------------------------------

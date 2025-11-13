@@ -3,10 +3,45 @@
 @section('title', $post->title . ' - ' . ($settings['site_name'] ?? 'SimpleCMS'))
 @section('meta_description', $post->meta_description ?? $post->excerpt)
 @section('meta_keywords', $post->meta_keywords ?? '')
+@section('canonical', route('blog.show', $post->slug))
+@section('og_type', 'article')
 
 @section('og_title', $post->title)
-@section('og_description', $post->excerpt)
-@section('og_image', $post->featured_image ? asset($post->featured_image) : '')
+@section('og_description', $post->meta_description ?? $post->excerpt)
+@section('og_image', $post->featured_image ? asset('storage/' . $post->featured_image) : '')
+
+@push('schema_markup')
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": {{ json_encode($post->title) }},
+    "description": {{ json_encode($post->meta_description ?? $post->excerpt) }},
+    "image": {{ json_encode($post->featured_image ? asset('storage/' . $post->featured_image) : '') }},
+    "author": {
+        "@type": "Person",
+        "name": {{ json_encode($post->author->name ?? 'Unknown') }}
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": {{ json_encode($settings['site_name'] ?? 'SimpleCMS') }},
+        "logo": {
+            "@type": "ImageObject",
+            "url": {{ json_encode(asset('images/logo.png')) }}
+        }
+    },
+    "datePublished": {{ json_encode($post->published_at?->toIso8601String()) }},
+    "dateModified": {{ json_encode($post->updated_at->toIso8601String()) }},
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": {{ json_encode(route('blog.show', $post->slug)) }}
+    }
+    @if($post->category)
+    ,"articleSection": {{ json_encode($post->category->name) }}
+    @endif
+}
+</script>
+@endpush
 
 @section('content')
     {{-- Breadcrumb --}}
