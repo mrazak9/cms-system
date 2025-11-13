@@ -192,6 +192,9 @@ class MediaController extends Controller
         try {
             $media = Media::findOrFail($id);
 
+            // Check authorization - only media owner or users with edit-all permission
+            $this->authorize('update', $media);
+
             return view('admin.media.edit', compact('media'));
         } catch (\Exception $e) {
             return back()->with('error', 'Error loading media for editing: ' . $e->getMessage());
@@ -215,6 +218,9 @@ class MediaController extends Controller
 
         try {
             $media = Media::findOrFail($id);
+
+            // Check authorization - only media owner or users with edit-all permission
+            $this->authorize('update', $media);
 
             // Update media metadata
             $media->update([
@@ -240,6 +246,9 @@ class MediaController extends Controller
     {
         try {
             $media = Media::findOrFail($id);
+
+            // Check authorization - only media owner or users with delete-all permission
+            $this->authorize('delete', $media);
 
             // Delete the file from storage
             if (Storage::disk('public')->exists($media->filepath)) {

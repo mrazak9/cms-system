@@ -161,6 +161,10 @@ class PostController extends Controller
     {
         try {
             $post = Post::findOrFail($id);
+
+            // Check authorization - only post owner or users with edit-all permission
+            $this->authorize('update', $post);
+
             $categories = Category::all();
 
             return view('admin.posts.edit', compact('post', 'categories'));
@@ -195,6 +199,9 @@ class PostController extends Controller
 
         try {
             $post = Post::findOrFail($id);
+
+            // Check authorization - only post owner or users with edit-all permission
+            $this->authorize('update', $post);
 
             // Generate slug if not provided
             if (empty($validated['slug'])) {
@@ -258,6 +265,9 @@ class PostController extends Controller
     {
         try {
             $post = Post::findOrFail($id);
+
+            // Check authorization - only post owner or users with delete-all permission
+            $this->authorize('delete', $post);
 
             // Delete featured image if exists
             if ($post->featured_image) {

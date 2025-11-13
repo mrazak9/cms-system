@@ -15,9 +15,11 @@
                 <div class="card-header">
                     <h4>All Posts</h4>
                     <div class="card-header-action">
-                        <a href="{{ route('admin.posts.create') }}" class="btn btn-primary">
-                            <i class="fas fa-plus"></i> Create New Post
-                        </a>
+                        @can('posts.create')
+                            <a href="{{ route('admin.posts.create') }}" class="btn btn-primary">
+                                <i class="fas fa-plus"></i> Create New Post
+                            </a>
+                        @endcan
                     </div>
                 </div>
                 <div class="card-body">
@@ -135,20 +137,26 @@
                                                         <i class="fas fa-eye"></i>
                                                     </a>
                                                 @endif
-                                                <a href="{{ route('admin.posts.edit', $post->id) }}" class="btn btn-sm btn-primary" title="Edit">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
-                                                <button type="button" class="btn btn-sm btn-danger" title="Delete"
-                                                        onclick="deletePost({{ $post->id }})">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
+                                                @can('update', $post)
+                                                    <a href="{{ route('admin.posts.edit', $post->id) }}" class="btn btn-sm btn-primary" title="Edit">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                @endcan
+                                                @can('delete', $post)
+                                                    <button type="button" class="btn btn-sm btn-danger" title="Delete"
+                                                            onclick="deletePost({{ $post->id }})">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                @endcan
                                             </div>
-                                            <form id="delete-form-{{ $post->id }}"
-                                                  action="{{ route('admin.posts.destroy', $post->id) }}"
-                                                  method="POST" style="display: none;">
-                                                @csrf
-                                                @method('DELETE')
-                                            </form>
+                                            @can('delete', $post)
+                                                <form id="delete-form-{{ $post->id }}"
+                                                      action="{{ route('admin.posts.destroy', $post->id) }}"
+                                                      method="POST" style="display: none;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                </form>
+                                            @endcan
                                         </td>
                                     </tr>
                                 @empty
@@ -160,7 +168,10 @@
                                                     No posts found matching your filters.
                                                     <a href="{{ route('admin.posts.index') }}">Clear filters</a>
                                                 @else
-                                                    No posts found. <a href="{{ route('admin.posts.create') }}">Create your first post</a>
+                                                    No posts found.
+                                                    @can('posts.create')
+                                                        <a href="{{ route('admin.posts.create') }}">Create your first post</a>
+                                                    @endcan
                                                 @endif
                                             </p>
                                         </td>
