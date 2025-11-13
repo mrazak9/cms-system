@@ -134,6 +134,9 @@ class RolesAndPermissionsSeeder extends Seeder
                 'security.view',
                 'security.manage',
             ],
+            'analytics' => [
+                'analytics.view',
+            ],
         ];
     }
 

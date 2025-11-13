@@ -173,6 +173,14 @@
             </li>
             @endcan
 
+            @can('analytics.view')
+            <li class="{{ request()->routeIs('admin.analytics.*') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('admin.analytics.index') }}">
+                    <i class="fas fa-chart-pie"></i> <span>Analytics</span>
+                </a>
+            </li>
+            @endcan
+
             <li class="menu-header">Account</li>
             <li class="{{ request()->routeIs('admin.profile.*') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('admin.profile.edit') }}">

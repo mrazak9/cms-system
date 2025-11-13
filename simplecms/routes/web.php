@@ -215,6 +215,13 @@ Route::prefix('admin')
         Route::post('security/unlock/{user}', [App\Http\Controllers\Admin\SecurityController::class, 'unlockAccount'])->name('security.unlock');
         Route::post('security/lock/{user}', [App\Http\Controllers\Admin\SecurityController::class, 'lockAccount'])->name('security.lock');
         Route::post('security/clear-old', [App\Http\Controllers\Admin\SecurityController::class, 'clearOldAttempts'])->name('security.clear-old');
+
+        // Analytics
+        Route::get('analytics', [App\Http\Controllers\Admin\AnalyticsController::class, 'index'])->name('analytics.index');
+        Route::get('analytics/content-performance', [App\Http\Controllers\Admin\AnalyticsController::class, 'contentPerformance'])->name('analytics.content-performance');
+        Route::get('analytics/traffic-sources', [App\Http\Controllers\Admin\AnalyticsController::class, 'trafficSources'])->name('analytics.traffic-sources');
+        Route::get('analytics/user-engagement', [App\Http\Controllers\Admin\AnalyticsController::class, 'userEngagement'])->name('analytics.user-engagement');
+        Route::get('analytics/export', [App\Http\Controllers\Admin\AnalyticsController::class, 'export'])->name('analytics.export');
     });
 
 /*

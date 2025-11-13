@@ -7,6 +7,7 @@ use App\Models\Post;
 use App\Models\Category;
 use App\Models\Tag;
 use App\Models\SearchLog;
+use App\Models\PageView;
 use Illuminate\Http\Request;
 
 /**
@@ -67,6 +68,9 @@ class PostController extends Controller
 
             // Increment views count
             $post->incrementViewsCount();
+
+            // Log page view for analytics
+            PageView::logView($post);
 
             // Get related posts from same category
             $relatedPosts = Post::published()

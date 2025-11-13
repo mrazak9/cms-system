@@ -119,4 +119,12 @@ class Post extends Model
     {
         $this->increment('views_count');
     }
+
+    /**
+     * PageViews relationship (polymorphic)
+     */
+    public function pageViews()
+    {
+        return $this->morphMany(PageView::class, 'viewable');
+    }
 }

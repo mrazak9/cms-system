@@ -56,4 +56,12 @@ class Page extends Model
     {
         return $query->where('is_homepage', true);
     }
+
+    /**
+     * PageViews relationship (polymorphic)
+     */
+    public function pageViews()
+    {
+        return $this->morphMany(PageView::class, 'viewable');
+    }
 }

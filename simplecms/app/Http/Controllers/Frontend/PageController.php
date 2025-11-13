@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Page;
+use App\Models\PageView;
 use Illuminate\Http\Request;
 
 /**
@@ -29,6 +30,9 @@ class PageController extends Controller
                     $query->visible()->ordered()->with('sectionTemplate');
                 }, 'theme'])
                 ->firstOrFail();
+
+            // Log page view for analytics
+            PageView::logView($page);
 
             // Get the theme for this page (specific theme or active theme)
             $theme = $page->theme;
