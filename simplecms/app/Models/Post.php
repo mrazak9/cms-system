@@ -18,6 +18,8 @@ class Post extends Model
         'category_id',
         'author_id',
         'is_published',
+        'is_featured',
+        'featured_order',
         'published_at',
         'meta_description',
         'meta_keywords',
@@ -26,8 +28,10 @@ class Post extends Model
 
     protected $casts = [
         'is_published' => 'boolean',
+        'is_featured' => 'boolean',
         'published_at' => 'datetime',
         'views_count' => 'integer',
+        'featured_order' => 'integer',
     ];
 
     // Relationships
@@ -56,6 +60,12 @@ class Post extends Model
         return $this->comments()->where('status', Comment::STATUS_APPROVED);
     }
 
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class, 'post_tag')
+                    ->withTimestamps();
+    }
+
     // Scopes
     public function scopePublished($query)
     {
@@ -71,6 +81,19 @@ class Post extends Model
     public function scopeByAuthor($query, $authorId)
     {
         return $query->where('author_id', $authorId);
+    }
+
+    public function scopeFeatured($query)
+    {
+        return $query->where('is_featured', true)
+                    ->orderBy('featured_order', 'asc');
+    }
+
+    public function scopeByTag($query, $tagSlug)
+    {
+        return $query->whereHas('tags', function ($q) use ($tagSlug) {
+            $q->where('slug', $tagSlug);
+        });
     }
 
     // Mutators & Accessors
