@@ -16,7 +16,9 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\Admin\ContactSubmissionController;
+use App\Http\Controllers\Admin\CommentController as AdminCommentController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -52,6 +54,9 @@ Route::prefix('blog')->name('blog.')->group(function () {
 // Contact Form routes
 Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
+
+// Comment routes
+Route::post('/posts/{post}/comments', [CommentController::class, 'store'])->name('comments.store');
 
 /*
 |--------------------------------------------------------------------------
@@ -173,6 +178,12 @@ Route::prefix('admin')
         Route::patch('contact-submissions/{id}/mark-as-read', [ContactSubmissionController::class, 'markAsRead'])->name('contact-submissions.mark-as-read');
         Route::patch('contact-submissions/{id}/mark-as-unread', [ContactSubmissionController::class, 'markAsUnread'])->name('contact-submissions.mark-as-unread');
         Route::delete('contact-submissions/{id}', [ContactSubmissionController::class, 'destroy'])->name('contact-submissions.destroy');
+
+        // Comments Management
+        Route::get('comments', [AdminCommentController::class, 'index'])->name('comments.index');
+        Route::patch('comments/{id}/approve', [AdminCommentController::class, 'approve'])->name('comments.approve');
+        Route::patch('comments/{id}/spam', [AdminCommentController::class, 'markAsSpam'])->name('comments.spam');
+        Route::delete('comments/{id}', [AdminCommentController::class, 'destroy'])->name('comments.destroy');
     });
 
 /*

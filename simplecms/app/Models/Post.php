@@ -46,6 +46,16 @@ class Post extends Model
         return $this->hasMany(MenuItem::class);
     }
 
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    public function approvedComments()
+    {
+        return $this->comments()->where('status', Comment::STATUS_APPROVED);
+    }
+
     // Scopes
     public function scopePublished($query)
     {

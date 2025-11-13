@@ -87,6 +87,21 @@
             </li>
             @endcan
 
+            @can('comments.view')
+            <li class="{{ request()->routeIs('admin.comments.*') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('admin.comments.index') }}">
+                    <i class="fas fa-comments"></i>
+                    <span>Comments</span>
+                    @php
+                        $pendingComments = \App\Models\Comment::pending()->count();
+                    @endphp
+                    @if($pendingComments > 0)
+                        <span class="badge badge-warning ml-auto">{{ $pendingComments }}</span>
+                    @endif
+                </a>
+            </li>
+            @endcan
+
             <li class="menu-header">Appearance</li>
             @can('themes.view')
             <li class="{{ request()->routeIs('admin.themes.*') ? 'active' : '' }}">

@@ -108,6 +108,12 @@ class RolesAndPermissionsSeeder extends Seeder
                 'contact.view',
                 'contact.delete',
             ],
+            'comments' => [
+                'comments.view',
+                'comments.moderate',
+                'comments.delete',
+                'comments.bypass-moderation',
+            ],
         ];
     }
 
@@ -153,6 +159,9 @@ class RolesAndPermissionsSeeder extends Seeder
 
             // Contact
             'contact.view', 'contact.delete',
+
+            // Comments
+            'comments.view', 'comments.moderate', 'comments.delete', 'comments.bypass-moderation',
         ];
 
         $editor->syncPermissions($editorPermissions);

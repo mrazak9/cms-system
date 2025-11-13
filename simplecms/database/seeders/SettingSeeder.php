@@ -210,6 +210,20 @@ class SettingSeeder extends Seeder
                 'group' => 'email',
             ],
 
+            // Comments Settings
+            [
+                'key' => 'comments_enabled',
+                'value' => '1',
+                'type' => 'boolean',
+                'group' => 'comments',
+            ],
+            [
+                'key' => 'comments_require_moderation',
+                'value' => '1',
+                'type' => 'boolean',
+                'group' => 'comments',
+            ],
+
             // Maintenance Settings
             [
                 'key' => 'maintenance_mode',

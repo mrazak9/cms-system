@@ -199,6 +199,9 @@
                         </div>
                     @endif
 
+                    {{-- Comments Section --}}
+                    @include('frontend.partials.comments', ['post' => $post, 'commentsEnabled' => true])
+
                     {{-- Prev/Next Navigation --}}
                     <nav class="post-navigation">
                         <div class="row g-3">
