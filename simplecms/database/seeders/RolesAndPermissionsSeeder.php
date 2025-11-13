@@ -67,6 +67,12 @@ class RolesAndPermissionsSeeder extends Seeder
                 'categories.edit',
                 'categories.delete',
             ],
+            'tags' => [
+                'tags.view',
+                'tags.create',
+                'tags.edit',
+                'tags.delete',
+            ],
             'media' => [
                 'media.view',
                 'media.upload',
@@ -152,6 +158,9 @@ class RolesAndPermissionsSeeder extends Seeder
 
             // Categories
             'categories.view', 'categories.create', 'categories.edit', 'categories.delete',
+
+            // Tags
+            'tags.view', 'tags.create', 'tags.edit', 'tags.delete',
 
             // Media
             'media.view', 'media.upload', 'media.edit', 'media.edit-all',

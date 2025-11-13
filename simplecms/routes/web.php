@@ -20,6 +20,7 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\Admin\ContactSubmissionController;
 use App\Http\Controllers\Admin\CommentController as AdminCommentController;
 use App\Http\Controllers\Admin\ActivityLogController;
+use App\Http\Controllers\Admin\TagController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -49,6 +50,7 @@ Route::get('/search', [FrontendPostController::class, 'search'])->name('search')
 Route::prefix('blog')->name('blog.')->group(function () {
     Route::get('/', [FrontendPostController::class, 'index'])->name('index');
     Route::get('/category/{slug}', [FrontendPostController::class, 'category'])->name('category');
+    Route::get('/tag/{slug}', [FrontendPostController::class, 'tag'])->name('tag');
     Route::get('/{slug}', [FrontendPostController::class, 'show'])->name('show');
 });
 
@@ -128,6 +130,9 @@ Route::prefix('admin')
 
         // Category Management (Resource Controller)
         Route::resource('categories', CategoryController::class);
+
+        // Tag Management (Resource Controller)
+        Route::resource('tags', TagController::class)->except(['show']);
 
         // Menu Management (Resource Controller)
         Route::resource('menus', MenuController::class);

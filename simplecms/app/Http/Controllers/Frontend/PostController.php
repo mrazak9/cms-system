@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use App\Models\Post;
 use App\Models\Category;
+use App\Models\Tag;
 use Illuminate\Http\Request;
 
 /**
@@ -60,7 +61,7 @@ class PostController extends Controller
             // Find the post by slug
             $post = Post::where('slug', $slug)
                 ->published()
-                ->with(['author', 'category'])
+                ->with(['author', 'category', 'tags'])
                 ->firstOrFail();
 
             // Increment views count
@@ -149,6 +150,52 @@ class PostController extends Controller
         } catch (\Exception $e) {
             \Log::error('Category posts error: ' . $e->getMessage());
             abort(500, 'Unable to load category posts');
+        }
+    }
+
+    /**
+     * Display posts by tag
+     *
+     * @param  string  $slug
+     * @return \Illuminate\View\View
+     */
+    public function tag($slug)
+    {
+        try {
+            // Find the tag by slug
+            $tag = Tag::where('slug', $slug)->firstOrFail();
+
+            // Get posts with this tag
+            $posts = Post::published()
+                ->whereHas('tags', function ($query) use ($tag) {
+                    $query->where('tags.id', $tag->id);
+                })
+                ->with(['author', 'category', 'tags'])
+                ->latest('published_at')
+                ->paginate(12);
+
+            // Get all categories with post counts
+            $categories = Category::withCount(['posts' => function ($query) {
+                $query->published();
+            }])
+            ->having('posts_count', '>', 0)
+            ->get();
+
+            // Get popular tags (tags with most posts)
+            $popularTags = Tag::withCount(['posts' => function ($query) {
+                $query->published();
+            }])
+            ->having('posts_count', '>', 0)
+            ->orderBy('posts_count', 'desc')
+            ->take(10)
+            ->get();
+
+            return view('frontend.posts.tag', compact('posts', 'tag', 'categories', 'popularTags'));
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            abort(404, 'Tag not found');
+        } catch (\Exception $e) {
+            \Log::error('Tag posts error: ' . $e->getMessage());
+            abort(500, 'Unable to load tag posts');
         }
     }
 }

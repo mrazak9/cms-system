@@ -44,8 +44,8 @@
             </li>
             @endcan
 
-            @if(auth()->user()->can('posts.view') || auth()->user()->can('categories.view'))
-            <li class="dropdown {{ request()->routeIs('admin.posts.*') || request()->routeIs('admin.categories.*') ? 'active' : '' }}">
+            @if(auth()->user()->can('posts.view') || auth()->user()->can('categories.view') || auth()->user()->can('tags.view'))
+            <li class="dropdown {{ request()->routeIs('admin.posts.*') || request()->routeIs('admin.categories.*') || request()->routeIs('admin.tags.*') ? 'active' : '' }}">
                 <a href="#" class="nav-link has-dropdown" data-toggle="dropdown">
                     <i class="fas fa-newspaper"></i> <span>Posts & Categories</span>
                 </a>
@@ -58,6 +58,11 @@
                     @can('categories.view')
                     <li class="{{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
                         <a class="nav-link" href="{{ route('admin.categories.index') }}">Categories</a>
+                    </li>
+                    @endcan
+                    @can('tags.view')
+                    <li class="{{ request()->routeIs('admin.tags.*') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ route('admin.tags.index') }}">Tags</a>
                     </li>
                     @endcan
                 </ul>

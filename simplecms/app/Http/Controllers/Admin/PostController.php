@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Post;
 use App\Models\Category;
+use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
@@ -61,8 +62,9 @@ class PostController extends Controller
     {
         try {
             $categories = Category::all();
+            $tags = Tag::orderBy('name')->get();
 
-            return view('admin.posts.create', compact('categories'));
+            return view('admin.posts.create', compact('categories', 'tags'));
         } catch (\Exception $e) {
             return back()->with('error', 'Error loading post form: ' . $e->getMessage());
         }
@@ -88,6 +90,8 @@ class PostController extends Controller
             'published_at' => 'nullable|date',
             'meta_description' => 'nullable|string|max:500',
             'meta_keywords' => 'nullable|string|max:255',
+            'tags' => 'nullable|array',
+            'tags.*' => 'exists:tags,id',
         ]);
 
         try {
@@ -125,6 +129,11 @@ class PostController extends Controller
                 'views_count' => 0,
             ]);
 
+            // Sync tags
+            if ($request->has('tags')) {
+                $post->tags()->sync($request->tags);
+            }
+
             return redirect()->route('admin.posts.index')
                 ->with('success', 'Post created successfully!');
         } catch (\Exception $e) {
@@ -160,14 +169,15 @@ class PostController extends Controller
     public function edit($id)
     {
         try {
-            $post = Post::findOrFail($id);
+            $post = Post::with('tags')->findOrFail($id);
 
             // Check authorization - only post owner or users with edit-all permission
             $this->authorize('update', $post);
 
             $categories = Category::all();
+            $tags = Tag::orderBy('name')->get();
 
-            return view('admin.posts.edit', compact('post', 'categories'));
+            return view('admin.posts.edit', compact('post', 'categories', 'tags'));
         } catch (\Exception $e) {
             return back()->with('error', 'Error loading post for editing: ' . $e->getMessage());
         }
@@ -195,6 +205,8 @@ class PostController extends Controller
             'meta_description' => 'nullable|string|max:500',
             'meta_keywords' => 'nullable|string|max:255',
             'remove_featured_image' => 'boolean',
+            'tags' => 'nullable|array',
+            'tags.*' => 'exists:tags,id',
         ]);
 
         try {
@@ -246,6 +258,14 @@ class PostController extends Controller
                 'meta_description' => $validated['meta_description'] ?? null,
                 'meta_keywords' => $validated['meta_keywords'] ?? null,
             ]);
+
+            // Sync tags
+            if ($request->has('tags')) {
+                $post->tags()->sync($request->tags);
+            } else {
+                // If no tags selected, detach all
+                $post->tags()->sync([]);
+            }
 
             return redirect()->route('admin.posts.index')
                 ->with('success', 'Post updated successfully!');

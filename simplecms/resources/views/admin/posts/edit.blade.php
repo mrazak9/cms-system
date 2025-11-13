@@ -218,6 +218,43 @@
                     </div>
                 </div>
 
+                <!-- Tags -->
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Tags</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group mb-0">
+                            <label>Select Tags</label>
+                            <div style="max-height: 200px; overflow-y: auto; border: 1px solid #e4e6fc; border-radius: 4px; padding: 10px;">
+                                @forelse($tags ?? [] as $tag)
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox"
+                                               class="custom-control-input"
+                                               id="tag-{{ $tag->id }}"
+                                               name="tags[]"
+                                               value="{{ $tag->id }}"
+                                               {{ in_array($tag->id, old('tags', $post->tags->pluck('id')->toArray())) ? 'checked' : '' }}>
+                                        <label class="custom-control-label" for="tag-{{ $tag->id }}">
+                                            {{ $tag->name }}
+                                        </label>
+                                    </div>
+                                @empty
+                                    <p class="text-muted mb-0">No tags available.</p>
+                                @endforelse
+                            </div>
+                            @error('tags')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="mt-2">
+                            <a href="{{ route('admin.tags.index') }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-plus"></i> Manage Tags
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Featured Image -->
                 <div class="card">
                     <div class="card-header">

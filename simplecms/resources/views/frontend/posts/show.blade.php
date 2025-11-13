@@ -82,6 +82,20 @@
                             {!! $post->content !!}
                         </div>
 
+                        {{-- Tags --}}
+                        @if($post->tags && $post->tags->count() > 0)
+                            <div class="post-tags mt-4 pt-4 border-top">
+                                <h6 class="text-muted mb-3"><i class="fas fa-tags me-2"></i>Tags:</h6>
+                                <div class="d-flex flex-wrap gap-2">
+                                    @foreach($post->tags as $tag)
+                                        <a href="{{ route('blog.tag', $tag->slug) }}" class="badge bg-light text-dark text-decoration-none py-2 px-3" style="font-size: 14px;">
+                                            <i class="fas fa-tag me-1"></i>{{ $tag->name }}
+                                        </a>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
+
                         {{-- Post Footer --}}
                         <footer class="post-footer mt-5 pt-4 border-top">
                             <div class="d-flex justify-content-between align-items-center">
