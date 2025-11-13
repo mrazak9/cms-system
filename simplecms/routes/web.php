@@ -233,6 +233,13 @@ Route::prefix('admin')
         Route::post('cache/clear-tag', [App\Http\Controllers\Admin\CacheController::class, 'clearTag'])->name('cache.clear-tag');
         Route::post('cache/warm', [App\Http\Controllers\Admin\CacheController::class, 'warm'])->name('cache.warm');
         Route::post('cache/optimize', [App\Http\Controllers\Admin\CacheController::class, 'optimize'])->name('cache.optimize');
+
+        // SEO Management
+        Route::get('seo', [App\Http\Controllers\Admin\SeoController::class, 'index'])->name('seo.index');
+        Route::get('seo/analyze', [App\Http\Controllers\Admin\SeoController::class, 'analyze'])->name('seo.analyze');
+
+        // URL Redirects
+        Route::resource('redirects', App\Http\Controllers\Admin\RedirectController::class);
     });
 
 /*

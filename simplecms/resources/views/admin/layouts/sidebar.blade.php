@@ -165,6 +165,14 @@
             </li>
             @endcan
 
+            @can('settings.view')
+            <li class="{{ request()->routeIs('admin.seo.*', 'admin.redirects.*') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('admin.seo.index') }}">
+                    <i class="fas fa-search"></i> <span>SEO Tools</span>
+                </a>
+            </li>
+            @endcan
+
             @can('activity-log.view')
             <li class="{{ request()->routeIs('admin.activity-logs.*') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('admin.activity-logs.index') }}">
