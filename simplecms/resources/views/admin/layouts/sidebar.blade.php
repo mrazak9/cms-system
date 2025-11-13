@@ -156,6 +156,14 @@
                 </a>
             </li>
             @endcan
+
+            @can('search-statistics.view')
+            <li class="{{ request()->routeIs('admin.search-statistics.*') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('admin.search-statistics.index') }}">
+                    <i class="fas fa-chart-bar"></i> <span>Search Statistics</span>
+                </a>
+            </li>
+            @endcan
         </ul>
 
         <div class="mt-4 mb-4 p-3 hide-sidebar-mini">

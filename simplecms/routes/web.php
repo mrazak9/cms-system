@@ -21,6 +21,7 @@ use App\Http\Controllers\Admin\ContactSubmissionController;
 use App\Http\Controllers\Admin\CommentController as AdminCommentController;
 use App\Http\Controllers\Admin\ActivityLogController;
 use App\Http\Controllers\Admin\TagController;
+use App\Http\Controllers\Admin\SearchStatisticsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -43,8 +44,9 @@ use Illuminate\Support\Facades\Route;
 // Homepage - either custom page or blog listing
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-// Search route
+// Search routes
 Route::get('/search', [FrontendPostController::class, 'search'])->name('search');
+Route::get('/search/suggestions', [FrontendPostController::class, 'searchSuggestions'])->name('search.suggestions');
 
 // Blog routes
 Route::prefix('blog')->name('blog.')->group(function () {
@@ -193,6 +195,9 @@ Route::prefix('admin')
 
         // Activity Logs
         Route::get('activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
+
+        // Search Statistics
+        Route::get('search-statistics', [SearchStatisticsController::class, 'index'])->name('search-statistics.index');
     });
 
 /*

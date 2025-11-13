@@ -123,6 +123,9 @@ class RolesAndPermissionsSeeder extends Seeder
             'activity-log' => [
                 'activity-log.view',
             ],
+            'search-statistics' => [
+                'search-statistics.view',
+            ],
         ];
     }
 
@@ -177,6 +180,9 @@ class RolesAndPermissionsSeeder extends Seeder
 
             // Activity Logs
             'activity-log.view',
+
+            // Search Statistics
+            'search-statistics.view',
         ];
 
         $editor->syncPermissions($editorPermissions);
