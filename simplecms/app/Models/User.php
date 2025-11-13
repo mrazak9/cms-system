@@ -48,6 +48,8 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
         'social_links' => 'array',
+        'locked_until' => 'datetime',
+        'last_login_at' => 'datetime',
     ];
 
     /**
@@ -98,5 +100,94 @@ class User extends Authenticatable
         $links = $this->social_links ?? [];
         $links[$platform] = $url;
         $this->social_links = $links;
+    }
+
+    /**
+     * Security Methods
+     */
+
+    /**
+     * Check if the account is locked
+     */
+    public function isLocked()
+    {
+        return $this->locked_until && $this->locked_until->isFuture();
+    }
+
+    /**
+     * Lock the account for a specified duration (in minutes)
+     */
+    public function lockAccount($minutes = 15)
+    {
+        $this->locked_until = now()->addMinutes($minutes);
+        $this->save();
+
+        ActivityLog::log(
+            ActivityLog::TYPE_LOGIN,
+            "Account locked due to multiple failed login attempts",
+            $this
+        );
+    }
+
+    /**
+     * Unlock the account
+     */
+    public function unlockAccount()
+    {
+        $this->locked_until = null;
+        $this->failed_login_attempts = 0;
+        $this->save();
+
+        ActivityLog::log(
+            ActivityLog::TYPE_LOGIN,
+            "Account unlocked",
+            $this
+        );
+    }
+
+    /**
+     * Increment failed login attempts
+     */
+    public function incrementFailedLoginAttempts()
+    {
+        $this->failed_login_attempts++;
+        $this->save();
+
+        // Auto-lock after 5 failed attempts
+        if ($this->failed_login_attempts >= 5) {
+            $this->lockAccount(15); // Lock for 15 minutes
+        }
+    }
+
+    /**
+     * Reset failed login attempts
+     */
+    public function resetFailedLoginAttempts()
+    {
+        $this->failed_login_attempts = 0;
+        $this->save();
+    }
+
+    /**
+     * Update last login information
+     */
+    public function updateLastLogin()
+    {
+        $this->last_login_at = now();
+        $this->last_login_ip = request()->ip();
+        $this->failed_login_attempts = 0;
+        $this->save();
+    }
+
+    /**
+     * Get time remaining until account is unlocked
+     */
+    public function getLockedTimeRemaining()
+    {
+        if (!$this->isLocked()) {
+            return null;
+        }
+
+        return $this->locked_until->diffForHumans();
     }
 }

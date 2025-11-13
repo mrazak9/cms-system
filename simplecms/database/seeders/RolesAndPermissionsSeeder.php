@@ -130,6 +130,10 @@ class RolesAndPermissionsSeeder extends Seeder
                 'revisions.view',
                 'revisions.restore',
             ],
+            'security' => [
+                'security.view',
+                'security.manage',
+            ],
         ];
     }
 

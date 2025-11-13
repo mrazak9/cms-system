@@ -40,6 +40,7 @@ class LoginRequest extends FormRequest
     public function authenticate(): void
     {
         $this->ensureIsNotRateLimited();
+        $this->ensureAccountIsNotLocked();
 
         if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
@@ -50,6 +51,22 @@ class LoginRequest extends FormRequest
         }
 
         RateLimiter::clear($this->throttleKey());
+    }
+
+    /**
+     * Ensure the account is not locked.
+     *
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function ensureAccountIsNotLocked(): void
+    {
+        $user = \App\Models\User::where('email', $this->email)->first();
+
+        if ($user && $user->isLocked()) {
+            throw ValidationException::withMessages([
+                'email' => 'Your account has been locked due to multiple failed login attempts. Please try again ' . $user->getLockedTimeRemaining() . '.',
+            ]);
+        }
     }
 
     /**

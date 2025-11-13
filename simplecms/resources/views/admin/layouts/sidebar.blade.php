@@ -165,6 +165,14 @@
             </li>
             @endcan
 
+            @can('security.view')
+            <li class="{{ request()->routeIs('admin.security.*') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('admin.security.index') }}">
+                    <i class="fas fa-shield-alt"></i> <span>Security</span>
+                </a>
+            </li>
+            @endcan
+
             <li class="menu-header">Account</li>
             <li class="{{ request()->routeIs('admin.profile.*') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('admin.profile.edit') }}">

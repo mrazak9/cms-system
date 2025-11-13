@@ -207,6 +207,14 @@ Route::prefix('admin')
         Route::get('revisions/{type}/{id}/{version}', [RevisionController::class, 'show'])->name('revisions.show');
         Route::get('revisions/{type}/{id}/compare', [RevisionController::class, 'compare'])->name('revisions.compare');
         Route::post('revisions/{type}/{id}/restore/{version}', [RevisionController::class, 'restore'])->name('revisions.restore');
+
+        // Security
+        Route::get('security', [App\Http\Controllers\Admin\SecurityController::class, 'index'])->name('security.index');
+        Route::get('security/failed-logins', [App\Http\Controllers\Admin\SecurityController::class, 'failedLogins'])->name('security.failed-logins');
+        Route::get('security/locked-accounts', [App\Http\Controllers\Admin\SecurityController::class, 'lockedAccounts'])->name('security.locked-accounts');
+        Route::post('security/unlock/{user}', [App\Http\Controllers\Admin\SecurityController::class, 'unlockAccount'])->name('security.unlock');
+        Route::post('security/lock/{user}', [App\Http\Controllers\Admin\SecurityController::class, 'lockAccount'])->name('security.lock');
+        Route::post('security/clear-old', [App\Http\Controllers\Admin\SecurityController::class, 'clearOldAttempts'])->name('security.clear-old');
     });
 
 /*
