@@ -4,11 +4,28 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 use App\Traits\HasRevisions;
 
 class Post extends Model
 {
     use HasFactory, HasRevisions;
+
+    /**
+     * Boot method to clear cache on updates
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saved(function () {
+            Cache::tags(['posts'])->flush();
+        });
+
+        static::deleted(function () {
+            Cache::tags(['posts'])->flush();
+        });
+    }
 
     protected $fillable = [
         'title',

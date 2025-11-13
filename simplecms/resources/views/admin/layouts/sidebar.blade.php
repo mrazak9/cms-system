@@ -157,6 +157,14 @@
             </li>
             @endcan
 
+            @can('settings.edit')
+            <li class="{{ request()->routeIs('admin.cache.*') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('admin.cache.index') }}">
+                    <i class="fas fa-tachometer-alt"></i> <span>Cache & Performance</span>
+                </a>
+            </li>
+            @endcan
+
             @can('activity-log.view')
             <li class="{{ request()->routeIs('admin.activity-logs.*') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('admin.activity-logs.index') }}">

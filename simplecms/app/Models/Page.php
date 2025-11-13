@@ -4,10 +4,27 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 class Page extends Model
 {
     use HasFactory;
+
+    /**
+     * Boot method to clear cache on updates
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saved(function () {
+            Cache::tags(['pages'])->flush();
+        });
+
+        static::deleted(function () {
+            Cache::tags(['pages'])->flush();
+        });
+    }
 
     protected $fillable = [
         'title',

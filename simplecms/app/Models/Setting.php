@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 class Setting extends Model
 {
@@ -15,6 +16,22 @@ class Setting extends Model
         'type',
         'group',
     ];
+
+    /**
+     * Boot method to clear cache on updates
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saved(function () {
+            Cache::tags(['settings'])->flush();
+        });
+
+        static::deleted(function () {
+            Cache::tags(['settings'])->flush();
+        });
+    }
 
     // Scopes
     public function scopeByGroup($query, $group)
@@ -30,19 +47,25 @@ class Setting extends Model
     // Helper methods for getting/setting values
     public static function get($key, $default = null)
     {
-        $setting = static::where('key', $key)->first();
+        $settings = Cache::tags(['settings'])->remember('all_settings', 86400, function () {
+            return static::pluck('value', 'key')->toArray();
+        });
 
-        if (!$setting) {
+        if (!isset($settings[$key])) {
             return $default;
         }
 
+        // Get type for casting
+        $setting = static::where('key', $key)->first();
+        $type = $setting ? $setting->type : 'text';
+
         // Cast value based on type
-        return static::castValue($setting->value, $setting->type);
+        return static::castValue($settings[$key], $type);
     }
 
     public static function set($key, $value, $type = 'text', $group = 'general')
     {
-        return static::updateOrCreate(
+        $result = static::updateOrCreate(
             ['key' => $key],
             [
                 'value' => $value,
@@ -50,11 +73,18 @@ class Setting extends Model
                 'group' => $group,
             ]
         );
+
+        // Clear cache
+        Cache::tags(['settings'])->flush();
+
+        return $result;
     }
 
     public static function getGroup($group)
     {
-        return static::where('group', $group)->pluck('value', 'key');
+        return Cache::tags(['settings'])->remember("settings_group_{$group}", 86400, function () use ($group) {
+            return static::where('group', $group)->pluck('value', 'key');
+        });
     }
 
     // Cast value based on type

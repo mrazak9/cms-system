@@ -226,6 +226,13 @@ Route::prefix('admin')
         // Editorial Calendar
         Route::get('calendar', [App\Http\Controllers\Admin\EditorialCalendarController::class, 'index'])->name('calendar.index');
         Route::get('calendar/upcoming', [App\Http\Controllers\Admin\EditorialCalendarController::class, 'upcoming'])->name('calendar.upcoming');
+
+        // Cache Management
+        Route::get('cache', [App\Http\Controllers\Admin\CacheController::class, 'index'])->name('cache.index');
+        Route::post('cache/clear-all', [App\Http\Controllers\Admin\CacheController::class, 'clearAll'])->name('cache.clear-all');
+        Route::post('cache/clear-tag', [App\Http\Controllers\Admin\CacheController::class, 'clearTag'])->name('cache.clear-tag');
+        Route::post('cache/warm', [App\Http\Controllers\Admin\CacheController::class, 'warm'])->name('cache.warm');
+        Route::post('cache/optimize', [App\Http\Controllers\Admin\CacheController::class, 'optimize'])->name('cache.optimize');
     });
 
 /*

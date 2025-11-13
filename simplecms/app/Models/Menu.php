@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 class Menu extends Model
 {
@@ -18,6 +19,22 @@ class Menu extends Model
     protected $casts = [
         'is_active' => 'boolean',
     ];
+
+    /**
+     * Boot method to clear cache on updates
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saved(function () {
+            Cache::tags(['menus'])->flush();
+        });
+
+        static::deleted(function () {
+            Cache::tags(['menus'])->flush();
+        });
+    }
 
     // Relationships
     public function menuItems()

@@ -5,17 +5,32 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use App\Models\Page;
 use App\Models\Theme;
+use App\Services\CacheService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class HomeController extends Controller
 {
+    protected $cacheService;
+
+    public function __construct(CacheService $cacheService)
+    {
+        $this->cacheService = $cacheService;
+    }
+
     /**
      * Display the homepage
      */
     public function index()
     {
-        // Get latest posts
-        $posts = Post::published()->latest()->take(6)->get();
+        // Get latest posts with caching
+        $posts = Cache::tags(['posts'])->remember('homepage_posts', 300, function () {
+            return Post::with(['author', 'category'])
+                ->published()
+                ->latest('published_at')
+                ->take(6)
+                ->get();
+        });
 
         // Get the active theme
         $activeTheme = Theme::where('is_active', true)->first();
