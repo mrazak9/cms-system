@@ -11,6 +11,7 @@
 @section('content')
     <div class="row">
         <div class="col-lg-5">
+            @if((isset($editCategory) && auth()->user()->can('categories.edit')) || (!isset($editCategory) && auth()->user()->can('categories.create')))
             <div class="card">
                 <div class="card-header">
                     <h4>{{ isset($editCategory) ? 'Edit Category' : 'Add New Category' }}</h4>
@@ -90,6 +91,7 @@
                     </form>
                 </div>
             </div>
+            @endif
 
             <div class="card">
                 <div class="card-header">
@@ -165,21 +167,27 @@
                                         </td>
                                         <td>
                                             <div class="btn-group">
-                                                <a href="{{ route('admin.categories.edit', $category->id) }}" class="btn btn-sm btn-primary" title="Edit">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
-                                                <button type="button" class="btn btn-sm btn-danger" title="Delete"
-                                                        onclick="deleteCategory({{ $category->id }})"
-                                                        {{ $category->posts_count > 0 ? 'disabled' : '' }}>
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
+                                                @can('categories.edit')
+                                                    <a href="{{ route('admin.categories.edit', $category->id) }}" class="btn btn-sm btn-primary" title="Edit">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                @endcan
+                                                @can('categories.delete')
+                                                    <button type="button" class="btn btn-sm btn-danger" title="Delete"
+                                                            onclick="deleteCategory({{ $category->id }})"
+                                                            {{ $category->posts_count > 0 ? 'disabled' : '' }}>
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                @endcan
                                             </div>
-                                            <form id="delete-form-{{ $category->id }}"
-                                                  action="{{ route('admin.categories.destroy', $category->id) }}"
-                                                  method="POST" style="display: none;">
-                                                @csrf
-                                                @method('DELETE')
-                                            </form>
+                                            @can('categories.delete')
+                                                <form id="delete-form-{{ $category->id }}"
+                                                      action="{{ route('admin.categories.destroy', $category->id) }}"
+                                                      method="POST" style="display: none;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                </form>
+                                            @endcan
                                         </td>
                                     </tr>
                                 @empty

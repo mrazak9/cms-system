@@ -15,9 +15,11 @@
                 <div class="card-header">
                     <h4>All Pages</h4>
                     <div class="card-header-action">
-                        <a href="{{ route('admin.pages.create') }}" class="btn btn-primary">
-                            <i class="fas fa-plus"></i> Create New Page
-                        </a>
+                        @can('pages.create')
+                            <a href="{{ route('admin.pages.create') }}" class="btn btn-primary">
+                                <i class="fas fa-plus"></i> Create New Page
+                            </a>
+                        @endcan
                     </div>
                 </div>
                 <div class="card-body">
@@ -86,27 +88,38 @@
                                                         <i class="fas fa-eye"></i>
                                                     </a>
                                                 @endif
-                                                <a href="{{ route('admin.pages.edit', $page->id) }}" class="btn btn-sm btn-primary" title="Edit">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
-                                                <button type="button" class="btn btn-sm btn-danger" title="Delete"
-                                                        onclick="deletePage({{ $page->id }})">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
+                                                @can('pages.edit')
+                                                    <a href="{{ route('admin.pages.edit', $page->id) }}" class="btn btn-sm btn-primary" title="Edit">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                @endcan
+                                                @can('pages.delete')
+                                                    <button type="button" class="btn btn-sm btn-danger" title="Delete"
+                                                            onclick="deletePage({{ $page->id }})">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                @endcan
                                             </div>
-                                            <form id="delete-form-{{ $page->id }}"
-                                                  action="{{ route('admin.pages.destroy', $page->id) }}"
-                                                  method="POST" style="display: none;">
-                                                @csrf
-                                                @method('DELETE')
-                                            </form>
+                                            @can('pages.delete')
+                                                <form id="delete-form-{{ $page->id }}"
+                                                      action="{{ route('admin.pages.destroy', $page->id) }}"
+                                                      method="POST" style="display: none;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                </form>
+                                            @endcan
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
                                         <td colspan="8" class="text-center text-muted py-4">
                                             <i class="fas fa-file-alt fa-3x mb-3"></i>
-                                            <p>No pages found. <a href="{{ route('admin.pages.create') }}">Create your first page</a></p>
+                                            <p>
+                                                No pages found.
+                                                @can('pages.create')
+                                                    <a href="{{ route('admin.pages.create') }}">Create your first page</a>
+                                                @endcan
+                                            </p>
                                         </td>
                                     </tr>
                                 @endforelse

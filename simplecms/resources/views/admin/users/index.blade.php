@@ -15,9 +15,11 @@
                 <div class="card-header">
                     <h4>All Users</h4>
                     <div class="card-header-action">
-                        <a href="{{ route('admin.users.create') }}" class="btn btn-primary">
-                            <i class="fas fa-plus"></i> Add New User
-                        </a>
+                        @can('users.create')
+                            <a href="{{ route('admin.users.create') }}" class="btn btn-primary">
+                                <i class="fas fa-plus"></i> Add New User
+                            </a>
+                        @endcan
                     </div>
                 </div>
                 <div class="card-body">
@@ -60,28 +62,32 @@
                                             </td>
                                             <td>{{ $user->created_at->format('M d, Y') }}</td>
                                             <td class="text-right">
-                                                <a href="{{ route('admin.users.edit', $user->id) }}"
-                                                   class="btn btn-sm btn-warning"
-                                                   title="Edit">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
+                                                @can('users.edit')
+                                                    <a href="{{ route('admin.users.edit', $user->id) }}"
+                                                       class="btn btn-sm btn-warning"
+                                                       title="Edit">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                @endcan
 
-                                                @if($user->id !== auth()->id())
-                                                    <button type="button"
-                                                            class="btn btn-sm btn-danger"
-                                                            onclick="deleteUser({{ $user->id }})"
-                                                            title="Delete">
-                                                        <i class="fas fa-trash"></i>
-                                                    </button>
+                                                @can('users.delete')
+                                                    @if($user->id !== auth()->id())
+                                                        <button type="button"
+                                                                class="btn btn-sm btn-danger"
+                                                                onclick="deleteUser({{ $user->id }})"
+                                                                title="Delete">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
 
-                                                    <form id="delete-form-{{ $user->id }}"
-                                                          action="{{ route('admin.users.destroy', $user->id) }}"
-                                                          method="POST"
-                                                          style="display: none;">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                    </form>
-                                                @endif
+                                                        <form id="delete-form-{{ $user->id }}"
+                                                              action="{{ route('admin.users.destroy', $user->id) }}"
+                                                              method="POST"
+                                                              style="display: none;">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                        </form>
+                                                    @endif
+                                                @endcan
                                             </td>
                                         </tr>
                                     @endforeach
@@ -97,9 +103,11 @@
                             <i class="fas fa-users fa-4x text-muted mb-3"></i>
                             <h5>No Users Found</h5>
                             <p class="text-muted">Create your first user to get started</p>
-                            <a href="{{ route('admin.users.create') }}" class="btn btn-primary">
-                                <i class="fas fa-plus"></i> Add New User
-                            </a>
+                            @can('users.create')
+                                <a href="{{ route('admin.users.create') }}" class="btn btn-primary">
+                                    <i class="fas fa-plus"></i> Add New User
+                                </a>
+                            @endcan
                         </div>
                     @endif
                 </div>

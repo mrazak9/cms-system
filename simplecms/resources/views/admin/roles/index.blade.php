@@ -15,9 +15,11 @@
                 <div class="card-header">
                     <h4>All Roles</h4>
                     <div class="card-header-action">
-                        <a href="{{ route('admin.roles.create') }}" class="btn btn-primary">
-                            <i class="fas fa-plus"></i> Add New Role
-                        </a>
+                        @can('roles.create')
+                            <a href="{{ route('admin.roles.create') }}" class="btn btn-primary">
+                                <i class="fas fa-plus"></i> Add New Role
+                            </a>
+                        @endcan
                     </div>
                 </div>
                 <div class="card-body">
@@ -54,28 +56,32 @@
                                             </td>
                                             <td>{{ $role->created_at->format('M d, Y') }}</td>
                                             <td class="text-right">
-                                                <a href="{{ route('admin.roles.edit', $role->id) }}"
-                                                   class="btn btn-sm btn-warning"
-                                                   title="Edit">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
+                                                @can('roles.edit')
+                                                    <a href="{{ route('admin.roles.edit', $role->id) }}"
+                                                       class="btn btn-sm btn-warning"
+                                                       title="Edit">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                @endcan
 
-                                                @if($role->name !== 'admin')
-                                                    <button type="button"
-                                                            class="btn btn-sm btn-danger"
-                                                            onclick="deleteRole({{ $role->id }})"
-                                                            title="Delete">
-                                                        <i class="fas fa-trash"></i>
-                                                    </button>
+                                                @can('roles.delete')
+                                                    @if($role->name !== 'admin')
+                                                        <button type="button"
+                                                                class="btn btn-sm btn-danger"
+                                                                onclick="deleteRole({{ $role->id }})"
+                                                                title="Delete">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
 
-                                                    <form id="delete-form-{{ $role->id }}"
-                                                          action="{{ route('admin.roles.destroy', $role->id) }}"
-                                                          method="POST"
-                                                          style="display: none;">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                    </form>
-                                                @endif
+                                                        <form id="delete-form-{{ $role->id }}"
+                                                              action="{{ route('admin.roles.destroy', $role->id) }}"
+                                                              method="POST"
+                                                              style="display: none;">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                        </form>
+                                                    @endif
+                                                @endcan
                                             </td>
                                         </tr>
                                     @endforeach
@@ -87,9 +93,11 @@
                             <i class="fas fa-user-shield fa-4x text-muted mb-3"></i>
                             <h5>No Roles Found</h5>
                             <p class="text-muted">Create your first role to get started</p>
-                            <a href="{{ route('admin.roles.create') }}" class="btn btn-primary">
-                                <i class="fas fa-plus"></i> Add New Role
-                            </a>
+                            @can('roles.create')
+                                <a href="{{ route('admin.roles.create') }}" class="btn btn-primary">
+                                    <i class="fas fa-plus"></i> Add New Role
+                                </a>
+                            @endcan
                         </div>
                     @endif
                 </div>
