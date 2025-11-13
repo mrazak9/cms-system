@@ -126,6 +126,10 @@ class RolesAndPermissionsSeeder extends Seeder
             'search-statistics' => [
                 'search-statistics.view',
             ],
+            'revisions' => [
+                'revisions.view',
+                'revisions.restore',
+            ],
         ];
     }
 
@@ -183,6 +187,9 @@ class RolesAndPermissionsSeeder extends Seeder
 
             // Search Statistics
             'search-statistics.view',
+
+            // Revisions
+            'revisions.view', 'revisions.restore',
         ];
 
         $editor->syncPermissions($editorPermissions);

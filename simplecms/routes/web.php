@@ -22,6 +22,7 @@ use App\Http\Controllers\Admin\CommentController as AdminCommentController;
 use App\Http\Controllers\Admin\ActivityLogController;
 use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Admin\SearchStatisticsController;
+use App\Http\Controllers\Admin\RevisionController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -198,6 +199,12 @@ Route::prefix('admin')
 
         // Search Statistics
         Route::get('search-statistics', [SearchStatisticsController::class, 'index'])->name('search-statistics.index');
+
+        // Revisions
+        Route::get('revisions/{type}/{id}', [RevisionController::class, 'index'])->name('revisions.index');
+        Route::get('revisions/{type}/{id}/{version}', [RevisionController::class, 'show'])->name('revisions.show');
+        Route::get('revisions/{type}/{id}/compare', [RevisionController::class, 'compare'])->name('revisions.compare');
+        Route::post('revisions/{type}/{id}/restore/{version}', [RevisionController::class, 'restore'])->name('revisions.restore');
     });
 
 /*

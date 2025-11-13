@@ -19,6 +19,15 @@
                 <div class="card">
                     <div class="card-header">
                         <h4>Post Content</h4>
+                        <div class="card-header-action">
+                            @can('revisions.view')
+                                @if($post->getRevisionsCount() > 0)
+                                    <a href="{{ route('admin.revisions.index', ['type' => 'post', 'id' => $post->id]) }}" class="btn btn-sm btn-info">
+                                        <i class="fas fa-history me-1"></i> View History ({{ $post->getRevisionsCount() }})
+                                    </a>
+                                @endif
+                            @endcan
+                        </div>
                     </div>
                     <div class="card-body">
                         <div class="form-group">

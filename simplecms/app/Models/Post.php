@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\HasRevisions;
 
 class Post extends Model
 {
-    use HasFactory;
+    use HasFactory, HasRevisions;
 
     protected $fillable = [
         'title',
@@ -32,6 +33,23 @@ class Post extends Model
         'published_at' => 'datetime',
         'views_count' => 'integer',
         'featured_order' => 'integer',
+    ];
+
+    /**
+     * Fields that should be tracked for revisions
+     */
+    protected $revisionable = [
+        'title',
+        'slug',
+        'excerpt',
+        'content',
+        'category_id',
+        'is_published',
+        'is_featured',
+        'featured_order',
+        'published_at',
+        'meta_description',
+        'meta_keywords',
     ];
 
     // Relationships
