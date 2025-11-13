@@ -148,6 +148,23 @@
                     </div>
                     <div class="card-body">
                         <div class="form-group">
+                            <label for="workflow_status">Workflow Status <span class="text-danger">*</span></label>
+                            <select class="form-control @error('workflow_status') is-invalid @enderror"
+                                    id="workflow_status"
+                                    name="workflow_status"
+                                    required>
+                                <option value="draft" {{ old('workflow_status', $post->workflow_status ?? 'draft') == 'draft' ? 'selected' : '' }}>Draft</option>
+                                <option value="pending_review" {{ old('workflow_status', $post->workflow_status) == 'pending_review' ? 'selected' : '' }}>Pending Review</option>
+                                <option value="scheduled" {{ old('workflow_status', $post->workflow_status) == 'scheduled' ? 'selected' : '' }}>Scheduled</option>
+                                <option value="published" {{ old('workflow_status', $post->workflow_status) == 'published' ? 'selected' : '' }}>Published</option>
+                                <option value="archived" {{ old('workflow_status', $post->workflow_status) == 'archived' ? 'selected' : '' }}>Archived</option>
+                            </select>
+                            @error('workflow_status')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="form-group">
                             <div class="custom-control custom-checkbox">
                                 <input type="checkbox"
                                        class="custom-control-input"
@@ -174,7 +191,22 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                             <small class="form-text text-muted">
-                                Schedule post publication
+                                When the post was/will be published
+                            </small>
+                        </div>
+
+                        <div class="form-group" id="scheduled-publish-group" style="display: none;">
+                            <label for="scheduled_publish_at">Schedule Publish Date</label>
+                            <input type="datetime-local"
+                                   class="form-control @error('scheduled_publish_at') is-invalid @enderror"
+                                   id="scheduled_publish_at"
+                                   name="scheduled_publish_at"
+                                   value="{{ old('scheduled_publish_at', $post->scheduled_publish_at ? $post->scheduled_publish_at->format('Y-m-d\TH:i') : '') }}">
+                            @error('scheduled_publish_at')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <small class="form-text text-muted">
+                                Automatically publish at this date/time
                             </small>
                         </div>
 
@@ -387,5 +419,14 @@
 
     // Trigger count on page load
     $('#meta_description').trigger('input');
+
+    // Show/hide scheduled publish date based on workflow status
+    $('#workflow_status').on('change', function() {
+        if ($(this).val() === 'scheduled') {
+            $('#scheduled-publish-group').show();
+        } else {
+            $('#scheduled-publish-group').hide();
+        }
+    }).trigger('change');
 </script>
 @endpush

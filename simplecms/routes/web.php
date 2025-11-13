@@ -222,6 +222,10 @@ Route::prefix('admin')
         Route::get('analytics/traffic-sources', [App\Http\Controllers\Admin\AnalyticsController::class, 'trafficSources'])->name('analytics.traffic-sources');
         Route::get('analytics/user-engagement', [App\Http\Controllers\Admin\AnalyticsController::class, 'userEngagement'])->name('analytics.user-engagement');
         Route::get('analytics/export', [App\Http\Controllers\Admin\AnalyticsController::class, 'export'])->name('analytics.export');
+
+        // Editorial Calendar
+        Route::get('calendar', [App\Http\Controllers\Admin\EditorialCalendarController::class, 'index'])->name('calendar.index');
+        Route::get('calendar/upcoming', [App\Http\Controllers\Admin\EditorialCalendarController::class, 'upcoming'])->name('calendar.upcoming');
     });
 
 /*

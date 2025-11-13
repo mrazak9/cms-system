@@ -40,14 +40,35 @@ class PostController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $posts = Post::with(['author', 'category'])
-                ->latest()
-                ->paginate(15);
+            $query = Post::with(['author', 'category']);
 
-            return view('admin.posts.index', compact('posts'));
+            // Filter by category
+            if ($request->filled('category')) {
+                $query->where('category_id', $request->category);
+            }
+
+            // Filter by workflow status
+            if ($request->filled('workflow_status')) {
+                $query->where('workflow_status', $request->workflow_status);
+            }
+
+            // Search
+            if ($request->filled('search')) {
+                $search = $request->search;
+                $query->where(function($q) use ($search) {
+                    $q->where('title', 'like', "%{$search}%")
+                      ->orWhere('content', 'like', "%{$search}%")
+                      ->orWhere('excerpt', 'like', "%{$search}%");
+                });
+            }
+
+            $posts = $query->latest()->paginate(15)->withQueryString();
+            $categories = Category::withCount('posts')->get();
+
+            return view('admin.posts.index', compact('posts', 'categories'));
         } catch (\Exception $e) {
             return back()->with('error', 'Error loading posts: ' . $e->getMessage());
         }

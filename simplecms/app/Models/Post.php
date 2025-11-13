@@ -22,6 +22,8 @@ class Post extends Model
         'is_featured',
         'featured_order',
         'published_at',
+        'scheduled_publish_at',
+        'workflow_status',
         'meta_description',
         'meta_keywords',
         'views_count',
@@ -31,6 +33,7 @@ class Post extends Model
         'is_published' => 'boolean',
         'is_featured' => 'boolean',
         'published_at' => 'datetime',
+        'scheduled_publish_at' => 'datetime',
         'views_count' => 'integer',
         'featured_order' => 'integer',
     ];
@@ -114,10 +117,76 @@ class Post extends Model
         });
     }
 
+    // Workflow status scopes
+    public function scopeByWorkflowStatus($query, $status)
+    {
+        return $query->where('workflow_status', $status);
+    }
+
+    public function scopeDraft($query)
+    {
+        return $query->where('workflow_status', 'draft');
+    }
+
+    public function scopePendingReview($query)
+    {
+        return $query->where('workflow_status', 'pending_review');
+    }
+
+    public function scopeScheduled($query)
+    {
+        return $query->where('workflow_status', 'scheduled');
+    }
+
+    public function scopeArchived($query)
+    {
+        return $query->where('workflow_status', 'archived');
+    }
+
     // Mutators & Accessors
     public function incrementViewsCount()
     {
         $this->increment('views_count');
+    }
+
+    /**
+     * Check if post is scheduled for future publishing
+     */
+    public function isScheduled()
+    {
+        return $this->workflow_status === 'scheduled'
+            && $this->scheduled_publish_at
+            && $this->scheduled_publish_at->isFuture();
+    }
+
+    /**
+     * Get workflow status badge color
+     */
+    public function getWorkflowStatusBadgeClass()
+    {
+        return match($this->workflow_status) {
+            'draft' => 'badge-secondary',
+            'pending_review' => 'badge-warning',
+            'scheduled' => 'badge-info',
+            'published' => 'badge-success',
+            'archived' => 'badge-dark',
+            default => 'badge-secondary',
+        };
+    }
+
+    /**
+     * Get workflow status display label
+     */
+    public function getWorkflowStatusLabel()
+    {
+        return match($this->workflow_status) {
+            'draft' => 'Draft',
+            'pending_review' => 'Pending Review',
+            'scheduled' => 'Scheduled',
+            'published' => 'Published',
+            'archived' => 'Archived',
+            default => ucfirst($this->workflow_status),
+        };
     }
 
     /**

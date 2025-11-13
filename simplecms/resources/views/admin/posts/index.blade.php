@@ -42,11 +42,14 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label>Filter by Status</label>
-                                    <select name="status" class="form-control" onchange="this.form.submit()">
+                                    <label>Filter by Workflow Status</label>
+                                    <select name="workflow_status" class="form-control" onchange="this.form.submit()">
                                         <option value="">All Status</option>
-                                        <option value="published" {{ request('status') == 'published' ? 'selected' : '' }}>Published</option>
-                                        <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>Draft</option>
+                                        <option value="draft" {{ request('workflow_status') == 'draft' ? 'selected' : '' }}>Draft</option>
+                                        <option value="pending_review" {{ request('workflow_status') == 'pending_review' ? 'selected' : '' }}>Pending Review</option>
+                                        <option value="scheduled" {{ request('workflow_status') == 'scheduled' ? 'selected' : '' }}>Scheduled</option>
+                                        <option value="published" {{ request('workflow_status') == 'published' ? 'selected' : '' }}>Published</option>
+                                        <option value="archived" {{ request('workflow_status') == 'archived' ? 'selected' : '' }}>Archived</option>
                                     </select>
                                 </div>
                             </div>
@@ -107,14 +110,23 @@
                                             </div>
                                         </td>
                                         <td>
-                                            @if($post->is_published)
-                                                <span class="badge badge-success">
-                                                    <i class="fas fa-check"></i> Published
-                                                </span>
-                                            @else
-                                                <span class="badge badge-warning">
-                                                    <i class="fas fa-clock"></i> Draft
-                                                </span>
+                                            <span class="badge {{ $post->getWorkflowStatusBadgeClass() }}">
+                                                @if($post->workflow_status === 'scheduled')
+                                                    <i class="fas fa-calendar-alt"></i>
+                                                @elseif($post->workflow_status === 'published')
+                                                    <i class="fas fa-check"></i>
+                                                @elseif($post->workflow_status === 'pending_review')
+                                                    <i class="fas fa-clock"></i>
+                                                @elseif($post->workflow_status === 'archived')
+                                                    <i class="fas fa-archive"></i>
+                                                @else
+                                                    <i class="fas fa-file"></i>
+                                                @endif
+                                                {{ $post->getWorkflowStatusLabel() }}
+                                            </span>
+                                            @if($post->workflow_status === 'scheduled' && $post->scheduled_publish_at)
+                                                <br>
+                                                <small class="text-muted">{{ $post->scheduled_publish_at->format('M d, Y g:i A') }}</small>
                                             @endif
                                         </td>
                                         <td>

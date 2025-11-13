@@ -69,6 +69,14 @@
             </li>
             @endif
 
+            @can('posts.view')
+            <li class="{{ request()->routeIs('admin.calendar.*') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('admin.calendar.index') }}">
+                    <i class="far fa-calendar-alt"></i> <span>Editorial Calendar</span>
+                </a>
+            </li>
+            @endcan
+
             @can('menus.view')
             <li class="{{ request()->routeIs('admin.menus.*') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('admin.menus.index') }}">
