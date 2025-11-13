@@ -1,45 +1,45 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
-use App\Http\Requests\ProfileUpdateRequest;
+use App\Http\Controllers\Controller;
 use App\Models\ActivityLog;
-use Illuminate\Http\RedirectResponse;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules\Password;
-use Illuminate\View\View;
 
 class ProfileController extends Controller
 {
     /**
-     * Display the user's profile form.
+     * Show the user's profile
      */
-    public function edit(Request $request): View
+    public function show()
     {
-        // Check if user is admin and show admin profile view
-        if ($request->user()->hasRole('admin')) {
-            return view('admin.profile.edit', [
-                'user' => $request->user(),
-            ]);
-        }
+        $user = Auth::user();
 
-        return view('profile.edit', [
-            'user' => $request->user(),
-        ]);
+        return view('admin.profile.show', compact('user'));
     }
 
     /**
-     * Update the user's profile information.
+     * Show the form for editing the profile
      */
-    public function update(Request $request): RedirectResponse
+    public function edit()
     {
-        $user = $request->user();
+        $user = Auth::user();
 
-        // Validate all fields including new profile fields
+        return view('admin.profile.edit', compact('user'));
+    }
+
+    /**
+     * Update the user's profile
+     */
+    public function update(Request $request)
+    {
+        $user = Auth::user();
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email,' . $user->id,
@@ -85,10 +85,6 @@ class ProfileController extends Controller
         $user->phone = $validated['phone'] ?? null;
         $user->location = $validated['location'] ?? null;
 
-        if ($user->isDirty('email')) {
-            $user->email_verified_at = null;
-        }
-
         // Update social links
         $socialLinks = [];
         if (!empty($validated['social_twitter'])) {
@@ -119,41 +115,29 @@ class ProfileController extends Controller
             $user
         );
 
-        // Redirect back to appropriate profile page
-        if ($request->user()->hasRole('admin')) {
-            return Redirect::route('admin.profile.edit')->with('status', 'profile-updated');
-        }
-
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        return redirect()->route('admin.profile.edit')
+            ->with('success', 'Profile updated successfully!');
     }
 
     /**
-     * Show password change form
+     * Show the form for changing password
      */
-    public function editPassword(Request $request): View
+    public function editPassword()
     {
-        if ($request->user()->hasRole('admin')) {
-            return view('admin.profile.password', [
-                'user' => $request->user(),
-            ]);
-        }
-
-        return view('profile.password', [
-            'user' => $request->user(),
-        ]);
+        return view('admin.profile.password');
     }
 
     /**
      * Update the user's password
      */
-    public function updatePassword(Request $request): RedirectResponse
+    public function updatePassword(Request $request)
     {
         $validated = $request->validate([
             'current_password' => 'required|string',
             'password' => ['required', 'confirmed', Password::defaults()],
         ]);
 
-        $user = $request->user();
+        $user = Auth::user();
 
         // Verify current password
         if (!Hash::check($validated['current_password'], $user->password)) {
@@ -172,32 +156,7 @@ class ProfileController extends Controller
             $user
         );
 
-        // Redirect back to appropriate profile page
-        if ($request->user()->hasRole('admin')) {
-            return Redirect::route('admin.profile.edit')->with('status', 'password-updated');
-        }
-
-        return Redirect::route('profile.edit')->with('status', 'password-updated');
-    }
-
-    /**
-     * Delete the user's account.
-     */
-    public function destroy(Request $request): RedirectResponse
-    {
-        $request->validateWithBag('userDeletion', [
-            'password' => ['required', 'current_password'],
-        ]);
-
-        $user = $request->user();
-
-        Auth::logout();
-
-        $user->delete();
-
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return Redirect::to('/');
+        return redirect()->route('admin.profile.edit')
+            ->with('success', 'Password changed successfully!');
     }
 }

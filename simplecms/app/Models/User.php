@@ -22,6 +22,11 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'avatar',
+        'bio',
+        'phone',
+        'location',
+        'social_links',
     ];
 
     /**
@@ -42,6 +47,7 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'social_links' => 'array',
     ];
 
     /**
@@ -60,5 +66,37 @@ class User extends Authenticatable
     public function media()
     {
         return $this->hasMany(Media::class, 'uploaded_by');
+    }
+
+    /**
+     * Get the user's avatar URL
+     */
+    public function getAvatarUrl()
+    {
+        if ($this->avatar) {
+            return asset('storage/' . $this->avatar);
+        }
+
+        // Return default avatar or Gravatar
+        return 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&color=7F9CF5&background=EBF4FF';
+    }
+
+    /**
+     * Get social media link
+     */
+    public function getSocialLink($platform)
+    {
+        $links = $this->social_links ?? [];
+        return $links[$platform] ?? null;
+    }
+
+    /**
+     * Set social media link
+     */
+    public function setSocialLink($platform, $url)
+    {
+        $links = $this->social_links ?? [];
+        $links[$platform] = $url;
+        $this->social_links = $links;
     }
 }

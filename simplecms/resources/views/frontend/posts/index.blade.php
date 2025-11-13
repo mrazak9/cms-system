@@ -75,9 +75,10 @@
                                                     <div class="d-flex justify-content-between align-items-center">
                                                         @if($post->author)
                                                             <div class="d-flex align-items-center">
-                                                                <div class="avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px;">
-                                                                    {{ substr($post->author->name, 0, 1) }}
-                                                                </div>
+                                                                <img src="{{ $post->author->getAvatarUrl() }}"
+                                                                     alt="{{ $post->author->name }}"
+                                                                     class="rounded-circle me-2"
+                                                                     style="width: 32px; height: 32px; object-fit: cover;">
                                                                 <small class="text-muted">{{ $post->author->name }}</small>
                                                             </div>
                                                         @endif

@@ -44,9 +44,10 @@
                             <div class="d-flex align-items-center flex-wrap gap-3 text-muted mb-4">
                                 @if($post->author)
                                     <div class="d-flex align-items-center">
-                                        <div class="avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 40px; height: 40px;">
-                                            {{ substr($post->author->name, 0, 1) }}
-                                        </div>
+                                        <img src="{{ $post->author->getAvatarUrl() }}"
+                                             alt="{{ $post->author->name }}"
+                                             class="rounded-circle me-2"
+                                             style="width: 40px; height: 40px; object-fit: cover;">
                                         <div>
                                             <div class="fw-semibold text-dark">{{ $post->author->name }}</div>
                                             <small>{{ $post->published_at->format('M d, Y') }}</small>

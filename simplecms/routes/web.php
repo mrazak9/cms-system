@@ -109,6 +109,8 @@ Route::prefix('admin')
         // Admin Profile
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+        Route::get('/profile/password', [ProfileController::class, 'editPassword'])->name('profile.password.edit');
+        Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
 
         // Admin Logout
         Route::post('/logout', function() {
