@@ -57,6 +57,9 @@
                         <li class="nav-item">
                             <a class="nav-link {{ request()->is('blog*') ? 'active' : '' }}" href="{{ route('blog.index') }}">Blog</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->is('contact') ? 'active' : '' }}" href="{{ route('contact.index') }}">Contact</a>
+                        </li>
                     @endif
 
                     {{-- Search Form (Optional) --}}

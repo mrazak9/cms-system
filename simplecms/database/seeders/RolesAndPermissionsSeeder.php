@@ -104,6 +104,10 @@ class RolesAndPermissionsSeeder extends Seeder
                 'roles.edit',
                 'roles.delete',
             ],
+            'contact' => [
+                'contact.view',
+                'contact.delete',
+            ],
         ];
     }
 
@@ -146,6 +150,9 @@ class RolesAndPermissionsSeeder extends Seeder
 
             // Menus
             'menus.view', 'menus.create', 'menus.edit', 'menus.delete',
+
+            // Contact
+            'contact.view', 'contact.delete',
         ];
 
         $editor->syncPermissions($editorPermissions);

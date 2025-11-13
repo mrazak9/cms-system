@@ -15,6 +15,8 @@ use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\SitemapController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\Admin\ContactSubmissionController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -46,6 +48,10 @@ Route::prefix('blog')->name('blog.')->group(function () {
     Route::get('/category/{slug}', [FrontendPostController::class, 'category'])->name('category');
     Route::get('/{slug}', [FrontendPostController::class, 'show'])->name('show');
 });
+
+// Contact Form routes
+Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
+Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 
 /*
 |--------------------------------------------------------------------------
@@ -160,6 +166,13 @@ Route::prefix('admin')
 
         // Role Management (Resource Controller)
         Route::resource('roles', RoleController::class);
+
+        // Contact Submissions Management
+        Route::get('contact-submissions', [ContactSubmissionController::class, 'index'])->name('contact-submissions.index');
+        Route::get('contact-submissions/{id}', [ContactSubmissionController::class, 'show'])->name('contact-submissions.show');
+        Route::patch('contact-submissions/{id}/mark-as-read', [ContactSubmissionController::class, 'markAsRead'])->name('contact-submissions.mark-as-read');
+        Route::patch('contact-submissions/{id}/mark-as-unread', [ContactSubmissionController::class, 'markAsUnread'])->name('contact-submissions.mark-as-unread');
+        Route::delete('contact-submissions/{id}', [ContactSubmissionController::class, 'destroy'])->name('contact-submissions.destroy');
     });
 
 /*

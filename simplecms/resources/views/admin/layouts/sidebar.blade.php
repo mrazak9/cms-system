@@ -72,6 +72,21 @@
             </li>
             @endcan
 
+            @can('contact.view')
+            <li class="{{ request()->routeIs('admin.contact-submissions.*') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('admin.contact-submissions.index') }}">
+                    <i class="fas fa-envelope"></i>
+                    <span>Contact Submissions</span>
+                    @php
+                        $unreadCount = \App\Models\ContactSubmission::unread()->count();
+                    @endphp
+                    @if($unreadCount > 0)
+                        <span class="badge badge-warning ml-auto">{{ $unreadCount }}</span>
+                    @endif
+                </a>
+            </li>
+            @endcan
+
             <li class="menu-header">Appearance</li>
             @can('themes.view')
             <li class="{{ request()->routeIs('admin.themes.*') ? 'active' : '' }}">
