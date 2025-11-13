@@ -67,6 +67,17 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link"
+                                   id="email-tab"
+                                   data-toggle="pill"
+                                   href="#email"
+                                   role="tab"
+                                   aria-controls="email"
+                                   aria-selected="false">
+                                    <i class="fas fa-at"></i> Email
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link"
                                    id="analytics-tab"
                                    data-toggle="pill"
                                    href="#analytics"
@@ -432,6 +443,114 @@
                                             @error('contact_address')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Email Settings -->
+                            <div class="tab-pane fade" id="email" role="tabpanel" aria-labelledby="email-tab">
+                                <div class="row mt-4">
+                                    <div class="col-md-8">
+                                        <h5 class="mb-3">Email Configuration</h5>
+
+                                        <div class="form-group">
+                                            <label for="mail_from_address">From Email Address</label>
+                                            <input type="email"
+                                                   class="form-control @error('mail_from_address') is-invalid @enderror"
+                                                   id="mail_from_address"
+                                                   name="mail_from_address"
+                                                   value="{{ old('mail_from_address', $settings['mail_from_address'] ?? '') }}"
+                                                   placeholder="noreply@example.com">
+                                            @error('mail_from_address')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                            <small class="form-text text-muted">Email address used as sender for system emails</small>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="mail_from_name">From Name</label>
+                                            <input type="text"
+                                                   class="form-control @error('mail_from_name') is-invalid @enderror"
+                                                   id="mail_from_name"
+                                                   name="mail_from_name"
+                                                   value="{{ old('mail_from_name', $settings['mail_from_name'] ?? '') }}"
+                                                   placeholder="Your Site Name">
+                                            @error('mail_from_name')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                            <small class="form-text text-muted">Name displayed as sender for system emails</small>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="admin_email">Admin Email Address</label>
+                                            <input type="email"
+                                                   class="form-control @error('admin_email') is-invalid @enderror"
+                                                   id="admin_email"
+                                                   name="admin_email"
+                                                   value="{{ old('admin_email', $settings['admin_email'] ?? '') }}"
+                                                   placeholder="admin@example.com">
+                                            @error('admin_email')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                            <small class="form-text text-muted">Primary admin email for system notifications</small>
+                                        </div>
+
+                                        <hr class="my-4">
+
+                                        <h5 class="mb-3">Contact Form Notifications</h5>
+
+                                        <div class="form-group">
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="hidden" name="contact_notifications_enabled" value="0">
+                                                <input type="checkbox"
+                                                       class="custom-control-input"
+                                                       id="contact_notifications_enabled"
+                                                       name="contact_notifications_enabled"
+                                                       value="1"
+                                                       {{ old('contact_notifications_enabled', $settings['contact_notifications_enabled'] ?? '1') == '1' ? 'checked' : '' }}>
+                                                <label class="custom-control-label" for="contact_notifications_enabled">
+                                                    Enable Admin Notifications
+                                                </label>
+                                            </div>
+                                            <small class="form-text text-muted">Send email to admin when new contact form submission is received</small>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="contact_notification_email">Contact Notification Email</label>
+                                            <input type="email"
+                                                   class="form-control @error('contact_notification_email') is-invalid @enderror"
+                                                   id="contact_notification_email"
+                                                   name="contact_notification_email"
+                                                   value="{{ old('contact_notification_email', $settings['contact_notification_email'] ?? '') }}"
+                                                   placeholder="notifications@example.com">
+                                            @error('contact_notification_email')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                            <small class="form-text text-muted">Email address to receive contact form notifications (leave empty to use admin email)</small>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="hidden" name="contact_auto_reply_enabled" value="0">
+                                                <input type="checkbox"
+                                                       class="custom-control-input"
+                                                       id="contact_auto_reply_enabled"
+                                                       name="contact_auto_reply_enabled"
+                                                       value="1"
+                                                       {{ old('contact_auto_reply_enabled', $settings['contact_auto_reply_enabled'] ?? '1') == '1' ? 'checked' : '' }}>
+                                                <label class="custom-control-label" for="contact_auto_reply_enabled">
+                                                    Enable Auto-Reply
+                                                </label>
+                                            </div>
+                                            <small class="form-text text-muted">Send automatic confirmation email to contact form senders</small>
+                                        </div>
+
+                                        <div class="alert alert-info mt-4">
+                                            <i class="fas fa-info-circle"></i>
+                                            <strong>Email Configuration:</strong>
+                                            Make sure to configure your email settings in the <code>.env</code> file
+                                            (MAIL_MAILER, MAIL_HOST, MAIL_PORT, etc.) for emails to work properly.
                                         </div>
                                     </div>
                                 </div>

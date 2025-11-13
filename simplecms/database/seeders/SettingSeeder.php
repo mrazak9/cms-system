@@ -185,6 +185,30 @@ class SettingSeeder extends Seeder
                 'type' => 'text',
                 'group' => 'email',
             ],
+            [
+                'key' => 'admin_email',
+                'value' => 'admin@simplecms.test',
+                'type' => 'text',
+                'group' => 'email',
+            ],
+            [
+                'key' => 'contact_notification_email',
+                'value' => 'admin@simplecms.test',
+                'type' => 'text',
+                'group' => 'email',
+            ],
+            [
+                'key' => 'contact_notifications_enabled',
+                'value' => '1',
+                'type' => 'boolean',
+                'group' => 'email',
+            ],
+            [
+                'key' => 'contact_auto_reply_enabled',
+                'value' => '1',
+                'type' => 'boolean',
+                'group' => 'email',
+            ],
 
             // Maintenance Settings
             [
