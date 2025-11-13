@@ -19,6 +19,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\Admin\ContactSubmissionController;
 use App\Http\Controllers\Admin\CommentController as AdminCommentController;
+use App\Http\Controllers\Admin\ActivityLogController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -184,6 +185,9 @@ Route::prefix('admin')
         Route::patch('comments/{id}/approve', [AdminCommentController::class, 'approve'])->name('comments.approve');
         Route::patch('comments/{id}/spam', [AdminCommentController::class, 'markAsSpam'])->name('comments.spam');
         Route::delete('comments/{id}', [AdminCommentController::class, 'destroy'])->name('comments.destroy');
+
+        // Activity Logs
+        Route::get('activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
     });
 
 /*

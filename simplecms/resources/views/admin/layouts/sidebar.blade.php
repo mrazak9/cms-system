@@ -143,6 +143,14 @@
                 </a>
             </li>
             @endcan
+
+            @can('activity-log.view')
+            <li class="{{ request()->routeIs('admin.activity-logs.*') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('admin.activity-logs.index') }}">
+                    <i class="fas fa-history"></i> <span>Activity Log</span>
+                </a>
+            </li>
+            @endcan
         </ul>
 
         <div class="mt-4 mb-4 p-3 hide-sidebar-mini">

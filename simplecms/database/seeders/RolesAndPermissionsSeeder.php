@@ -114,6 +114,9 @@ class RolesAndPermissionsSeeder extends Seeder
                 'comments.delete',
                 'comments.bypass-moderation',
             ],
+            'activity-log' => [
+                'activity-log.view',
+            ],
         ];
     }
 
@@ -162,6 +165,9 @@ class RolesAndPermissionsSeeder extends Seeder
 
             // Comments
             'comments.view', 'comments.moderate', 'comments.delete', 'comments.bypass-moderation',
+
+            // Activity Logs
+            'activity-log.view',
         ];
 
         $editor->syncPermissions($editorPermissions);
